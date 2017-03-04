@@ -11,7 +11,7 @@
   *
   * ****************************************
  */
-package Assignment01;
+package hw01;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -56,7 +56,7 @@ public class Perceptron {
         this.weights = weights;
     }
 
-    public void train_Perceptron(double[] data1,
+    public void train_Perceptron(int[] data1,
                                  int indexOfOutput) {
         double net = 1 * this.weights.get(0);
         for (int i = 0; i < this.weights.size() - 1; i++) {
@@ -73,7 +73,7 @@ public class Perceptron {
 
     }
 
-    public double classify_Perceptron(double[] classify_Data1) {
+    public int classify_Perceptron(int[] classify_Data1) {
         double net = 1 * this.weights.get(0);
         for (int i = 0; i < this.weights.size() - 1; i++) {
             net += classify_Data1[i] * this.weights.get(i + 1);
@@ -83,7 +83,7 @@ public class Perceptron {
 
     }
 
-    public double step_function(double net) {
+    public int step_function(double net) {
         if (net >= 0) {
             return 1;
         }

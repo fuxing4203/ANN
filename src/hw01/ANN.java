@@ -11,7 +11,7 @@
   *
   * ****************************************
  */
-package Assignment01;
+package hw01;
 
 import java.util.ArrayList;
 
@@ -68,7 +68,7 @@ public class ANN {
         this.perceptronsList = perceptronsList;
     }
 
-    public void train_ANN(double[][] data) {
+    public void train_ANN(int[][] data) {
         int row = data.length;
         int col = data[0].length;
 
@@ -83,9 +83,9 @@ public class ANN {
 
     }
 
-    public double[][] classify_ANN(double[][] classifyData) {
+    public int[][] classify_ANN(int[][] classifyData) {
         int row = classifyData.length;
-        double outputResult[][] = new double[row][this.perceptronsList.size()];
+        int outputResult[][] = new int[row][this.perceptronsList.size()];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < this.perceptronsList.size(); j++) {
                 outputResult[i][j] = this.perceptronsList.get(j).classify_Perceptron(
