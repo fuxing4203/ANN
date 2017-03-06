@@ -23,7 +23,8 @@ import java.util.Random;
 public class Perceptron {
 
     private ArrayList<Double> weights;
-    final private static double alpha = 0.3;
+    private double theta;
+    final static double alpha = 0.2;
 
     /**
      *
@@ -33,9 +34,9 @@ public class Perceptron {
 
         this.weights = new ArrayList<Double>();
         Random randomDoubleGenerator = new Random();
+        this.theta = randomDoubleGenerator.nextDouble() - 0.5;
         for (int i = 0; i < numInp + 1; i++) {
             this.weights.add(randomDoubleGenerator.nextDouble() - 0.5);
-
         }
 
     }
@@ -56,30 +57,28 @@ public class Perceptron {
         this.weights = weights;
     }
 
-    public void train_Perceptron(int[] data1,
-                                 int indexOfOutput) {
-        double net = 1 * this.weights.get(0);
-        for (int i = 0; i < this.weights.size() - 1; i++) {
-            net += data1[i] * this.weights.get(i + 1);
+    public double train_Perceptron(double[] data1,
+                                   int indexOfOutput) {
 
-        }
-        double Error = data1[indexOfOutput] - step_function(net);
+        double fgets = classify_Perceptron(data1);
+        double Error = data1[indexOfOutput] - fgets;
         this.weights.set(0, this.weights.get(0) + alpha * 1 * Error);
         for (int j = 1; j < this.weights.size(); j++) {
             this.weights.set(j,
                              this.weights.get(j) + alpha * data1[j - 1] * Error);
 
         }
+        return Error;
 
     }
 
-    public int classify_Perceptron(int[] classify_Data1) {
-        double net = 1 * this.weights.get(0);
-        for (int i = 0; i < this.weights.size() - 1; i++) {
-            net += classify_Data1[i] * this.weights.get(i + 1);
+    public double classify_Perceptron(double[] classify_Data1) {
+        double net = this.theta;
+        for (int i = 0; i < this.weights.size(); i++) {
+            net += classify_Data1[i] * this.weights.get(i);
 
         }
-        return step_function(net);
+        return sigmoidal_activation_func(net);
 
     }
 
@@ -90,6 +89,18 @@ public class Perceptron {
         else {
             return 0;
         }
+
+    }
+
+    public double sigmoidal_activation_func(double net) {
+
+        return (double) 1 / (1 + Math.pow(Math.E, (-1) * net));
+
+    }
+
+    public void changeWeightAtIndex(double deltaWeight, int index) {
+
+        this.getWeights().set(deltaWeight + this.getWeights().get(index), index);
 
     }
 

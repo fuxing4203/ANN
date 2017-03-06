@@ -21,78 +21,108 @@ import java.util.ArrayList;
  */
 public class ANN {
 
-    private ArrayList<Perceptron> perceptronsList;
+    private ArrayList<HiddenLayer> hiddenLayerList;
 
-    private int layer;
+    private InputLayer inputLayer;
+
+    private OutputLayer outputLayer;
+
+    private int numOfLayers;
+
+    private int numOfLayerLayers;
 
     private int numIp;
 
-    public ANN(int numInp, int numOut, int layer) {
+    private int numOut;
 
-        this.layer = layer;
+    private static double minSSE = 0.001;
+
+    private int numNodesInHiddenLayers;
+
+    public ANN(int numInp, int numOut, int numOfLayers,
+               int numNodesInHiddenLayers, int minSSE) {
+
+        this.numOfLayers = numOfLayers;
+
+        this.numOfLayerLayers = this.numOfLayers - 1;
+
+        this.numOut = numOut;
 
         this.numIp = numInp;
 
-        this.perceptronsList = new ArrayList<Perceptron>();
-        for (int i = 0; i < numOut; i++) {
-            this.perceptronsList.add(new Perceptron(numInp));
+        ANN.minSSE = minSSE;
+
+        this.numNodesInHiddenLayers = numNodesInHiddenLayers;
+
+        this.inputLayer = new InputLayer(numInp, numOut);
+
+        this.hiddenLayerList = new ArrayList<HiddenLayer>();
+        this.outputLayer = new OutputLayer(numNodesInHiddenLayers, numOut);
+
+        int numPrevNodes = numInp;
+
+        for (int i = 0; i < numOfLayers - 2; i++) {
+            this.hiddenLayerList.add(new HiddenLayer(numPrevNodes,
+                                                     numNodesInHiddenLayers));
+            numPrevNodes = numNodesInHiddenLayers;
 
         }
+
+        this.hiddenLayerList.add(new HiddenLayer(numPrevNodes, numOut));
     }
 
-    public int getNumIp() {
-        return numIp;
-    }
-
-    public void setNumIp(int numIp) {
-        this.numIp = numIp;
-    }
-
-    public int getLayer() {
-        return layer;
-    }
-
-    public void setLayer(int layer) {
-        this.layer = layer;
-    }
-
-    public int getNumOfOutput() {
-        return this.perceptronsList.size();
-    }
-
-    public ArrayList<Perceptron> getPerceptronsList() {
-        return perceptronsList;
-    }
-
-    public void setPerceptronsList(ArrayList<Perceptron> perceptronsList) {
-        this.perceptronsList = perceptronsList;
-    }
-
-    public void train_ANN(int[][] data) {
+    public void train_ANN(double[][] data) {
         int row = data.length;
         int col = data[0].length;
+        double SSE;
+        double error;
+        //double[] inputDataRow;
+        double[] outputDataRow;
+        double actualOutput;
+        double expectedOutput;
 
-        for (int i = 0; i < row; i++) {
+        for (int i = 0; i < this.numOut; i++) {
 
-            for (int j = this.numIp; j < col; j++) {
-                this.perceptronsList.get(j + 1 - col).train_Perceptron(data[i],
-                                                                       j);
+            SSE = 0;
+
+            for (int j = 0; j < row; j++) {
+
+                outputDataRow = data[j];
+
+                for (int z = 0; z < this.numOfLayerLayers; z++) {
+
+                    outputDataRow = this.hiddenLayerList.get(z).classify_Layer(
+                            outputDataRow,
+                            i + this.numIp);
+
+                }
+                actualOutput = this.outputLayer.classify_NoOfOutputNode(
+                        outputDataRow, i);
+
+                expectedOutput = data[j][this.numIp + i] - actualOutput;
+                SSE += (expectedOutput - actualOutput);
+                if (this.numOfLayerLayers - 1 > 0) {
+                    this.outputLayer.train_NoOfOutputNode(actualOutput,
+                                                          expectedOutput,
+                                                          this.hiddenLayerList.get(
+                                                                  this.numOfLayerLayers - 2).getFnets(),
+                                                          i);
+                }
+                else {
+                    this.outputLayer.train_NoOfOutputNode(actualOutput,
+                                                          expectedOutput,
+                                                          data[j],
+                                                          i);
+
+                }
+
+                for (int z = 0; z < this.hiddenLayerList.size() - 1; z++) {
+
+                }
+
             }
 
         }
-
-    }
-
-    public int[][] classify_ANN(int[][] classifyData) {
-        int row = classifyData.length;
-        int outputResult[][] = new int[row][this.perceptronsList.size()];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < this.perceptronsList.size(); j++) {
-                outputResult[i][j] = this.perceptronsList.get(j).classify_Perceptron(
-                        classifyData[i]);
-            }
-        }
-        return outputResult;
 
     }
 
