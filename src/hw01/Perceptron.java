@@ -25,12 +25,14 @@ public class Perceptron {
     private ArrayList<Double> weights;
     private double theta;
     final static double alpha = 0.2;
+    private int numInp;
 
     /**
      *
      * @param numInp
      */
     public Perceptron(int numInp) {
+        this.numInp = numInp;
 
         this.weights = new ArrayList<Double>();
         Random randomDoubleGenerator = new Random();
@@ -49,6 +51,14 @@ public class Perceptron {
         return weights;
     }
 
+    public int getNumInp() {
+        return numInp;
+    }
+
+    public void setNumInp(int numInp) {
+        this.numInp = numInp;
+    }
+
     /**
      *
      * @param weights
@@ -57,19 +67,20 @@ public class Perceptron {
         this.weights = weights;
     }
 
-    public double train_Perceptron(double[] data1,
-                                   int indexOfOutput) {
+    public void train_Perceptron(double[] fgets, double littleDelta) {
+        double changeOfWeight;
+        for (int i = 0; i < this.getNumInp(); i++) {
+            changeOfWeight = Perceptron.calculateDeltaWeight(fgets[i],
+                                                             littleDelta);
 
-        double fgets = classify_Perceptron(data1);
-        double Error = data1[indexOfOutput] - fgets;
-        this.weights.set(0, this.weights.get(0) + alpha * 1 * Error);
-        for (int j = 1; j < this.weights.size(); j++) {
-            this.weights.set(j,
-                             this.weights.get(j) + alpha * data1[j - 1] * Error);
-
+            this.changeWeightAtIndex(changeOfWeight, i);
         }
-        return Error;
 
+    }
+
+    public static double calculateDeltaWeight(double prevFnet,
+                                              double littleDelta) {
+        return Perceptron.alpha * prevFnet * littleDelta;
     }
 
     public double classify_Perceptron(double[] classify_Data1) {
@@ -100,7 +111,12 @@ public class Perceptron {
 
     public void changeWeightAtIndex(double deltaWeight, int index) {
 
-        this.getWeights().set(deltaWeight + this.getWeights().get(index), index);
+        this.getWeights().set(index, deltaWeight + this.getWeights().get(index));
+
+    }
+
+    public double getWeightAtIndex(int index) {
+        return this.getWeights().get(index);
 
     }
 

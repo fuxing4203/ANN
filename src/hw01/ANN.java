@@ -40,7 +40,7 @@ public class ANN {
     private int numNodesInHiddenLayers;
 
     public ANN(int numInp, int numOut, int numOfLayers,
-               int numNodesInHiddenLayers, int minSSE) {
+               int numNodesInHiddenLayers, double minSSE) {
 
         this.numOfLayers = numOfLayers;
 
@@ -80,6 +80,7 @@ public class ANN {
         double[] outputDataRow;
         double actualOutput;
         double expectedOutput;
+        ArrayList<Perceptron> prevLayerNodes;
 
         for (int i = 0; i < this.numOut; i++) {
 
@@ -101,22 +102,41 @@ public class ANN {
 
                 expectedOutput = data[j][this.numIp + i] - actualOutput;
                 SSE += (expectedOutput - actualOutput);
+
                 if (this.numOfLayerLayers - 1 > 0) {
-                    this.outputLayer.train_NoOfOutputNode(actualOutput,
-                                                          expectedOutput,
-                                                          this.hiddenLayerList.get(
-                                                                  this.numOfLayerLayers - 2).getFnets(),
-                                                          i);
+                    //train OutputLayer
+                    outputDataRow = this.outputLayer.train_NoOfOutputNode(
+                            actualOutput,
+                            expectedOutput,
+                            this.hiddenLayerList.get(
+                                    this.numOfLayerLayers - 2).getFnets(),
+                            i);
+
+                    //between OutputLayer and firstHiddenLayer
+                    prevLayerNodes = new ArrayList<Perceptron>();
+                    prevLayerNodes.add(this.outputLayer.getNodeAtNo(i));
+                    outputDataRow = this.hiddenLayerList.get(
+                            this.numOfLayerLayers - 2).train_HiddenLayer(
+                                    outputDataRow,
+                                    this.hiddenLayerList.get(z + 1).getNodes(),
+                                    this.hiddenLayerList.get(z - 1).getFnets()
+                            );
+
+                    //train HiddenLayers
+                    for (int z = this.numOfLayerLayers - 3; z > 0; z--) {
+
+                        outputDataRow = this.hiddenLayerList.get(z).train_HiddenLayer(
+                                outputDataRow,
+                                this.hiddenLayerList.get(z + 1).getNodes(),
+                                this.hiddenLayerList.get(z - 1).getFnets());
+
+                    }
                 }
                 else {
                     this.outputLayer.train_NoOfOutputNode(actualOutput,
                                                           expectedOutput,
                                                           data[j],
                                                           i);
-
-                }
-
-                for (int z = 0; z < this.hiddenLayerList.size() - 1; z++) {
 
                 }
 

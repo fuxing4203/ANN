@@ -39,17 +39,14 @@ public class OutputLayer extends Layer {
     public double[] train_NoOfOutputNode(double expected, double actual,
                                          double[] fNets, int no) {
         double[] returnLittleDelta = new double[1];
-        returnLittleDelta[0] = this.calculateLittleDeltaOfOutputLayer(expected,
-                                                                      actual);
-        for (int i = 0; i < this.getNodes().get(no).getWeights().size(); i++) {
-
-        }
+        double LittleDeltaOfNoOfOutputNode = this.calculateLittleDeltaOfOutputLayer(
+                expected,
+                actual);
+        returnLittleDelta[0] = LittleDeltaOfNoOfOutputNode;
+        this.getNodeAtNo(no).train_Perceptron(fNets,
+                                              LittleDeltaOfNoOfOutputNode);
 
         return returnLittleDelta;
     }
 
-    public double calculateDeltaWeight(double prevfnet, double littleDelta) {
-        return Perceptron.alpha * prevfnet * littleDelta;
-
-    }
 }

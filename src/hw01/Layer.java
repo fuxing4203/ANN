@@ -43,6 +43,10 @@ public class Layer {
         return fNets;
     }
 
+    public double getFnetsAtNoNode(int index) {
+        return this.getfNets()[index];
+    }
+
     public void setfNets(double[] fNets) {
         this.fNets = fNets;
     }
@@ -69,6 +73,11 @@ public class Layer {
 
     public void setNodes(ArrayList<Perceptron> Nodes) {
         this.Nodes = Nodes;
+    }
+
+    public Perceptron getNodeAtNo(int index) {
+        return this.getNodes().get(index);
+
     }
 
     public double getMinSSE() {

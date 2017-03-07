@@ -13,6 +13,8 @@
  */
 package hw01;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author haoyuxiong
@@ -40,16 +42,33 @@ public class HiddenLayer extends Layer {
         this.fnets = fnets;
     }
 
-    public int[][] classify_HiddenLayer(double[] classifyData) {
-        int row = classifyData.length;
-        int outputResult[][] = new int[row][this.Nodes.size()];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < this.Nodes.size(); j++) {
-                outputResult[i][j] = this.getNodes().get(j).classify_Perceptron(
-                        classifyData);
-            }
+    public double[] train_HiddenLayer(double[] kLittleDeltas,
+                                      ArrayList<Perceptron> prevLayerNodes,
+                                      double[] prevFgets) {
+        double[] returnLittleDelta = new double[prevLayerNodes.size()];
+        double littleDelta;
+
+        for (int i = 0; i < this.getNumOfNodes(); i++) {
+            littleDelta = calculateLittleDeltaAtNoNode(i, this.getFnetsAtNoNode(
+                                                       i), prevLayerNodes,
+                                                       kLittleDeltas);
+            this.getNodeAtNo(i).train_Perceptron(fnets, littleDelta);
+            returnLittleDelta[i] = littleDelta;
+
         }
-        return outputResult;
+
+        return returnLittleDelta;
 
     }
+
+    public double calculateLittleDeltaAtNoNode(int no, double fgets,
+                                               ArrayList<Perceptron> prevLayerNodes,
+                                               double[] kLittleDeltas) {
+        double error = 0;
+        for (int i = 0; i < prevLayerNodes.size(); i++) {
+            error += (prevLayerNodes.get(i).getWeightAtIndex(no) * kLittleDeltas[i]);
+        }
+        return error * fgets * (1 - fgets);
+    }
+
 }
