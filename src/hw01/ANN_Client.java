@@ -27,19 +27,23 @@ public class ANN_Client {
 
     static Scanner in;
     static boolean firstRound = true;
+    static boolean inTrain = false;
     static int numIN;
     static int numOUT;
     static int numLayer;
     static int numNeuron;
-    static int maxSSE;
+    static double maxSSE;
     static ANN ann;
 
     public static void main(String args[]) throws FileNotFoundException {
+
+        in = new Scanner(System.in);
+
         System.out.println("Please choose between the following options:");
         System.out.println("\t1. Create a new ANN");
         System.out.println("\t2. Read in a config file");
 
-        in = new Scanner(System.in);
+        int mode = 0;
 
         int option = oneOrTwo();
 
@@ -48,97 +52,68 @@ public class ANN_Client {
 
             askInAndOutNum();
 
-            System.out.println("Please choose between the following modes: ");
-            System.out.println("\t1. training");
-            System.out.println("\t2. classification");
+        }
 
-            int mode = oneOrTwo();
+        // Read in config file
+        else {
+
+            askConfigFile();
+
+        }
+
+        ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
+
+        do {
+
+            mode = askMode();
 
             // For training
             if (mode == 1) {
+                inTrain = true;
                 train();
             }
 
             // For classification
             else if (mode == 2) {
-                classification();
-            }
-
-            ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
-
-            Scanner fScanner = readInputFile();
-
-            int[][] input2D = processInputFile(fScanner);
-
-            // For training
-            if (mode == 1) {
-                instance.train_ANN(input2D);
-
-                int save;
-                String configFilename;
-
-                do {
-                    System.out.println(
-                            "Would you like to save the network configuration to a configuration file? ");
-                    System.out.print("Enter 1 for yes or 2 for no: ");
-
-                    if (in.hasNextInt()) {
-                        save = in.nextInt();
-
-                        // Save to config file
-                        if (save == 1) {
-                            System.out.print(
-                                    "Enter the desired name for the configuration file: ");
-                            configFilename = in.next();
-
-                            ArrayList<Perceptron> perceptronList = instance.getPerceptronsList();
-                            ArrayList<ArrayList<Double>> weights2D = null;
-
-                            for (Perceptron perceptron : perceptronList) {
-                                ArrayList weigths = perceptron.getWeights();
-                                weights2D.add(weigths);
-                            }
-
-                            File configFile = new File("config.properties");
-
-                            break;
-                        }
-                        // Don't save to config file
-                        else if (save == 2) {
-                            break;
-                        }
-                        System.out.println("Invalid input, please try again!");
-                    }
-                } while (true);
-            }
-            // For classification
-            if (mode == 2) {
-                int[][] output2D;
-                output2D = instance.classify_ANN(input2D);
-
-                System.out.print(
-                        "Please enter the filename that the output should be saved into (including file extension): ");
-                String outputName = in.next();
-                PrintWriter out = new PrintWriter(outputName);
-
-                for (int i = 0; i < output2D.length; i++) {
-                    for (int j = 0; i < output2D[i].length; j++) {
-                        if (j != 0) {
-                            System.out.print(", ");
-                            out.print(", ");
-                        }
-                        System.out.printf("%d", output2D[i][j]);
-                        out.printf("%d", output2D[i][j]);
-                    }
-                    System.out.println();
-                    out.println();
+                if (!(inTrain || option == 2)) {
+                    askConfigFile();
                 }
-                out.close();
+                classify();
             }
+
+            // Quit program
+            else {
+                System.out.println("Bye!");
+                break;
+            }
+
+            firstRound = false;
+
+        } while (true);
+    }
+
+    private static int askMode() {
+
+        int mode;
+
+        System.out.println("Please choose between the following modes: ");
+        System.out.println("\t1. training");
+        System.out.println("\t2. classifying");
+
+        if (!firstRound) {
+            System.out.println("\t3. Quit");
+            mode = oneTwoOrThree();
         }
+
+        else {
+            mode = oneOrTwo();
+        }
+
+        return mode;
     }
 
     private static int oneOrTwo() {
+
         int option;
 
         do {
@@ -148,6 +123,27 @@ public class ANN_Client {
                 option = in.nextInt();
 
                 if (option == 1 || option == 2) {
+                    break;
+                }
+            }
+            System.out.println("Invalid input, please try again!");
+
+        } while (true);
+
+        return option;
+    }
+
+    private static int oneTwoOrThree() {
+
+        int option;
+
+        do {
+            System.out.print("Enter 1, 2, or 3: ");
+
+            if (in.hasNextInt()) {
+                option = in.nextInt();
+
+                if (option == 1 || option == 2 || option == 3) {
                     break;
                 }
             }
@@ -175,6 +171,9 @@ public class ANN_Client {
                         "Please enter the number of nerons in a hidden layer: ");
                 numNeuron = in.nextInt();
 
+                System.out.print("Please enter the maximum SSE: ");
+                maxSSE = in.nextDouble();
+
                 break;
             } catch (Exception e) {
                 System.out.println("Wrong format, please try again!");
@@ -183,34 +182,83 @@ public class ANN_Client {
         } while (true);
     }
 
+    private static void askConfigFile() {
+        do {
+            System.out.print(
+                    "Please enter the filename of the configuration file: ");
+            String configFilename = in.next();
+
+            try {
+                processConfigFile(configFilename);
+                break;
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found, try again!");
+            }
+        } while (true);
+    }
+
     private static void train() {
+
         System.out.print("Please enter the filename of the training data file: ");
 
         Scanner fScanner = readInputFile();
 
-        int[][] input2D = processInputFile(fScanner);
+        double[][] input2D = processInputFile(fScanner);
 
         ArrayList<Layer> layers = ann.train_ANN(input2D);
 
-        for (Layer layer : layers) {
-            ArrayList<Perceptron> perceptrons = layer.getNodes();
+        System.out.println(
+                "Would you like to save the network configuration to a configuration file? ");
+        System.out.println("1. yes");
+        System.out.println("2. no");
 
-            for (Perceptron perceptron : perceptrons) {
-                ArrayList<Double> weights = perceptron.getWeights();
-            }
+        int save = oneOrTwo();
+
+        if (save == 1) {
+            do {
+                try {
+                    generateConfigFile(layers);
+                    break;
+                } catch (FileNotFoundException e) {
+                    System.out.println("File not found, try again!");
+                }
+            } while (true);
         }
 
     }
 
-    private static void classification() {
+    private static void classify() throws FileNotFoundException {
+
         System.out.print("Please enter the filename of the input data file: ");
 
         Scanner fScanner = readInputFile();
 
-        int[][] input2D = processInputFile(fScanner);
+        double[][] input2D = processInputFile(fScanner);
+
+        int[][] output2D = ann.classify_ANN(input2D);
+
+        System.out.print(
+                "Please enter the filename that the output should be saved into (including file extension): ");
+        String outputName = in.next();
+        PrintWriter out = new PrintWriter(outputName);
+
+        for (int i = 0; i < output2D.length; i++) {
+            for (int j = 0; i < output2D[i].length; j++) {
+                if (j != 0) {
+                    System.out.print(", ");
+                    out.print(", ");
+                }
+                System.out.printf("%d", output2D[i][j]);
+                out.printf("%d", output2D[i][j]);
+            }
+            System.out.println();
+            out.println();
+        }
+        out.close();
     }
 
     private static Scanner readInputFile() {
+
         String filename;
         Scanner fScanner;
 
@@ -231,20 +279,21 @@ public class ANN_Client {
         return fScanner;
     }
 
-    private static int[][] processInputFile(Scanner fScanner) {
-        ArrayList<int[]> inputArray2D = new ArrayList<int[]>();
+    private static double[][] processInputFile(Scanner fScanner) {
+
+        ArrayList<double[]> inputArray2D = new ArrayList<double[]>();
 
         while (fScanner.hasNextLine()) {
             String line = fScanner.nextLine();
             String[] parts = line.split(",");
-            int[] ints = new int[parts.length];
+            double[] ints = new double[parts.length];
             for (int i = 0; i < parts.length; i++) {
-                ints[i] = Integer.parseInt(parts[i]);
+                ints[i] = Double.parseDouble(parts[i]);
             }
             inputArray2D.add(ints);
         }
 
-        int[][] input2D = new int[inputArray2D.size()][];
+        double[][] input2D = new double[inputArray2D.size()][];
 
         for (int i = 0; i < inputArray2D.size(); i++) {
             input2D[i] = inputArray2D.get(i);
@@ -253,6 +302,7 @@ public class ANN_Client {
     }
 
     private static void processConfigFile(String filename) throws FileNotFoundException {
+
         File f = new File(filename);
         Scanner configIn = new Scanner(f);
 
@@ -265,5 +315,31 @@ public class ANN_Client {
         numNeuron = Integer.parseInt(dataArray[3]);
         maxSSE = Integer.parseInt(dataArray[4]);
 
+    }
+
+    private static void generateConfigFile(ArrayList<Layer> layers) throws FileNotFoundException {
+
+        System.out.print("Enter the desired name for the configuration file: ");
+        String configFilename = in.next();
+
+        PrintWriter out = new PrintWriter(configFilename);
+        out.printf("%d,%d,%d,%d,%d\n", numIN, numOUT, numLayer, numNeuron,
+                   maxSSE);
+
+        for (Layer layer : layers) {
+            ArrayList<Perceptron> perceptrons = layer.getNodes();
+
+            for (Perceptron perceptron : perceptrons) {
+                ArrayList<Double> weights = perceptron.getWeights();
+
+                for (int i = 0; i < weights.size() - 1; i++) {
+                    out.printf("%f,", weights.get(i));
+                }
+
+                out.printf("%f\n", weights.get(weights.size()));
+            }
+        }
+
+        out.close();
     }
 }
