@@ -1,7 +1,7 @@
 /* *****************************************
   * CSCI205 - Software Engineering and Design
   * Spring 2017 *
-  * Name: NAMES of team members
+  * Name: Jingya Wu, Haoyu Xiong
   * Date: Mar 3, 2017
   * Time: 8:54:17 PM *
   * Project: csci205_hw
@@ -40,6 +40,12 @@ public class ANN_Client {
     static double maxSSE;
     static ANN ann;
 
+    /**
+     * Main program for interacting with user and get user specified choices
+     *
+     * @param args
+     * @throws FileNotFoundException
+     */
     public static void main(String args[]) throws FileNotFoundException {
 
         in = new Scanner(System.in);

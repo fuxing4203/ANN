@@ -33,6 +33,12 @@ public class SUB_ANN {
 
     private int numNodesInHiddenLayers;
 
+    /**
+     *
+     * @param numInp
+     * @param numOfLayers
+     * @param numNodesInHiddenLayers
+     */
     public SUB_ANN(int numInp, int numOfLayers,
                    int numNodesInHiddenLayers) {
         System.out.println("Constructor");
@@ -69,6 +75,12 @@ public class SUB_ANN {
          */
     }
 
+    /**
+     *
+     * @param inputDataAtRowJ
+     * @param no
+     * @return
+     */
     public double Feed_Forward_Train_SUB_ANN(
             double[] inputDataAtRowJ, int no) {
         double[] outputDataRow = inputDataAtRowJ;
@@ -87,6 +99,12 @@ public class SUB_ANN {
         return expectedOutput - actualOutput;
     }
 
+    /**
+     *
+     * @param actual
+     * @param expected
+     * @param inputDataAtRowJ
+     */
     public void Back_Propagation_Train_SUB_ANN(double actual, double expected,
                                                double[] inputDataAtRowJ) {
         double[] outputDataRow;
@@ -128,6 +146,11 @@ public class SUB_ANN {
 
     }
 
+    /**
+     *
+     * @param data
+     * @param no
+     */
     public void train_SUB_ANN(double[][] data, int no) {
         int row = data.length;
         double SSE;
@@ -153,6 +176,11 @@ public class SUB_ANN {
         } while (SSE >= ANN.minSSE);
     }
 
+    /**
+     *
+     * @param data
+     * @return
+     */
     public double Classify_SUB_ANN(double[] data) {
         double[] outputDataRow = data;
 
@@ -169,50 +197,98 @@ public class SUB_ANN {
         return actualOutput;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<HiddenLayer> getHiddenLayerList() {
         return hiddenLayerList;
     }
 
+    /**
+     *
+     * @param hiddenLayerList
+     */
     public void setHiddenLayerList(ArrayList<HiddenLayer> hiddenLayerList) {
         this.hiddenLayerList = hiddenLayerList;
     }
 
+    /**
+     *
+     * @return
+     */
     public OutputLayer getOutputLayer() {
         return outputLayer;
     }
 
+    /**
+     *
+     * @param outputLayer
+     */
     public void setOutputLayer(OutputLayer outputLayer) {
         this.outputLayer = outputLayer;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumOfLayers() {
         return numOfLayers;
     }
 
+    /**
+     *
+     * @param numOfLayers
+     */
     public void setNumOfLayers(int numOfLayers) {
         this.numOfLayers = numOfLayers;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumOfLayerLayers() {
         return numOfLayerLayers;
     }
 
+    /**
+     *
+     * @param numOfLayerLayers
+     */
     public void setNumOfLayerLayers(int numOfLayerLayers) {
         this.numOfLayerLayers = numOfLayerLayers;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumIp() {
         return numIp;
     }
 
+    /**
+     *
+     * @param numIp
+     */
     public void setNumIp(int numIp) {
         this.numIp = numIp;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumNodesInHiddenLayers() {
         return numNodesInHiddenLayers;
     }
 
+    /**
+     *
+     * @param numNodesInHiddenLayers
+     */
     public void setNumNodesInHiddenLayers(int numNodesInHiddenLayers) {
         this.numNodesInHiddenLayers = numNodesInHiddenLayers;
     }

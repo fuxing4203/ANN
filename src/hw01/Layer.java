@@ -27,6 +27,11 @@ public class Layer {
     private double minSSE;
     private double[] fNets;
 
+    /**
+     *
+     * @param numOfPrevNodes
+     * @param numOfNodes
+     */
     public Layer(int numOfPrevNodes, int numOfNodes) {
         this.numOfNodes = numOfNodes;
         this.numOfPrevNodes = numOfPrevNodes;
@@ -39,55 +44,110 @@ public class Layer {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public double[] getfNets() {
         return fNets;
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public double getFnetsAtNoNode(int index) {
         return this.fNets[index];
     }
 
+    /**
+     *
+     * @param fNets
+     */
     public void setfNets(double[] fNets) {
         this.fNets = fNets;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumOfPrevNodes() {
         return numOfPrevNodes;
     }
 
+    /**
+     *
+     * @param numOfPrevNodes
+     */
     public void setNumOfPrevNodes(int numOfPrevNodes) {
         this.numOfPrevNodes = numOfPrevNodes;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumOfNodes() {
         return numOfNodes;
     }
 
+    /**
+     *
+     * @param numOfNodes
+     */
     public void setNumOfNodes(int numOfNodes) {
         this.numOfNodes = numOfNodes;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Perceptron> getNodes() {
         return Nodes;
     }
 
+    /**
+     *
+     * @param Nodes
+     */
     public void setNodes(ArrayList<Perceptron> Nodes) {
         this.Nodes = Nodes;
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public Perceptron getNodeAtNo(int index) {
         return this.getNodes().get(index);
 
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMinSSE() {
         return minSSE;
     }
 
+    /**
+     *
+     * @param minSSE
+     */
     public void setMinSSE(double minSSE) {
         this.minSSE = minSSE;
     }
 
+    /**
+     *
+     * @param data
+     * @return
+     */
     public double[] classify_Layer(double[] data
     ) {
         double fgets;

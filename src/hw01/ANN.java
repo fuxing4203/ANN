@@ -24,9 +24,21 @@ public class ANN {
     private ArrayList<SUB_ANN> subANNList;
     private int numInp;
     private int numNodesInHiddenLayers;
+
+    /**
+     *
+     */
     public static double minSSE;
     private int numOut;
 
+    /**
+     *
+     * @param numInp
+     * @param numOut
+     * @param numOfLayers
+     * @param numNodesInHiddenLayers
+     * @param minSSE
+     */
     public ANN(int numInp, int numOut, int numOfLayers,
                int numNodesInHiddenLayers, double minSSE) {
         this.numInp = numInp;
@@ -42,46 +54,91 @@ public class ANN {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<SUB_ANN> getSubANNList() {
         return subANNList;
     }
 
+    /**
+     *
+     * @param subANNList
+     */
     public void setSubANNList(ArrayList<SUB_ANN> subANNList) {
         this.subANNList = subANNList;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumInp() {
         return numInp;
     }
 
+    /**
+     *
+     * @param numInp
+     */
     public void setNumInp(int numInp) {
         this.numInp = numInp;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumNodesInHiddenLayers() {
         return numNodesInHiddenLayers;
     }
 
+    /**
+     *
+     * @param numNodesInHiddenLayers
+     */
     public void setNumNodesInHiddenLayers(int numNodesInHiddenLayers) {
         this.numNodesInHiddenLayers = numNodesInHiddenLayers;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getMinSSE() {
         return minSSE;
     }
 
+    /**
+     *
+     * @param minSSE
+     */
     public static void setMinSSE(double minSSE) {
         ANN.minSSE = minSSE;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumOut() {
         return numOut;
     }
 
+    /**
+     *
+     * @param numOut
+     */
     public void setNumOut(int numOut) {
         this.numOut = numOut;
     }
 
+    /**
+     *
+     * @param data
+     * @return
+     */
     public ArrayList<SUB_ANN> Train_ANN(double[][] data) {
         for (int i = 0; i < this.numOut; i++) {
             this.subANNList.get(i).train_SUB_ANN(data, i);
@@ -90,6 +147,11 @@ public class ANN {
         return subANNList;
     }
 
+    /**
+     *
+     * @param data
+     * @return
+     */
     public int[][] Classify_ANN(double[][] data) {
         int[][] output2DArray = new int[data.length][this.numOut];
         double output;

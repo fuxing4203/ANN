@@ -31,11 +31,22 @@ public class HiddenLayer extends Layer {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public double[] getfNets() {
         return super.getfNets();
     }
 
+    /**
+     *
+     * @param kLittleDeltas
+     * @param prevLayerNodes
+     * @param prevFgets
+     * @return
+     */
     public double[] train_HiddenLayer(double[] kLittleDeltas,
                                       ArrayList<Perceptron> prevLayerNodes,
                                       double[] prevFgets) {
@@ -55,6 +66,14 @@ public class HiddenLayer extends Layer {
 
     }
 
+    /**
+     *
+     * @param no
+     * @param fgets
+     * @param prevLayerNodes
+     * @param kLittleDeltas
+     * @return
+     */
     public double calculateLittleDeltaAtNoNode(int no, double fgets,
                                                ArrayList<Perceptron> prevLayerNodes,
                                                double[] kLittleDeltas) {

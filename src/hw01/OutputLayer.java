@@ -19,12 +19,21 @@ package hw01;
  */
 public class OutputLayer extends Layer {
 
+    /**
+     *
+     * @param numOfPrevNodes
+     */
     public OutputLayer(int numOfPrevNodes) {
 
         super(numOfPrevNodes, 1);
 
     }
 
+    /**
+     *
+     * @param data
+     * @return
+     */
     public double classify_OutputNode(double[] data) {
         double fGets;
         fGets = this.getNodeAtNo(0).classify_Perceptron(data);
@@ -32,11 +41,24 @@ public class OutputLayer extends Layer {
         return fGets;
     }
 
+    /**
+     *
+     * @param expected
+     * @param actual
+     * @return
+     */
     public double calculateLittleDeltaOfOutputLayer(double expected,
                                                     double actual) {
         return actual * (1 - actual) * (expected - actual);
     }
 
+    /**
+     *
+     * @param actual
+     * @param expected
+     * @param fNets
+     * @return
+     */
     public double[] train_OutputNode(double actual, double expected,
                                      double[] fNets) {
         double[] returnLittleDelta = new double[1];

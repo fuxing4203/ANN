@@ -24,6 +24,10 @@ public class InputLayer {
     private int numInp;
     private int numOut;
 
+    /**
+     *
+     * @param numInp
+     */
     public InputLayer(int numInp) {
 
         this.numInp = numInp;
