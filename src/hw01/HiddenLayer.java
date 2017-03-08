@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class HiddenLayer extends Layer {
 
     /**
+     * Constructor for HiddenLayer
      *
      * @param numOfPrevNodes
      * @param numOfNodes
@@ -32,6 +33,7 @@ public class HiddenLayer extends Layer {
     }
 
     /**
+     * get list of f(net)s.
      *
      * @return
      */
@@ -41,11 +43,12 @@ public class HiddenLayer extends Layer {
     }
 
     /**
+     * Main method for training hidden layer.
      *
      * @param kLittleDeltas
      * @param prevLayerNodes
      * @param prevFgets
-     * @return
+     * @return double[] little delta list of the layer
      */
     public double[] train_HiddenLayer(double[] kLittleDeltas,
                                       ArrayList<Perceptron> prevLayerNodes,
@@ -67,12 +70,13 @@ public class HiddenLayer extends Layer {
     }
 
     /**
+     * Calculates the little delta at the noth node of the layer
      *
      * @param no
      * @param fgets
      * @param prevLayerNodes
      * @param kLittleDeltas
-     * @return
+     * @return double little delta
      */
     public double calculateLittleDeltaAtNoNode(int no, double fgets,
                                                ArrayList<Perceptron> prevLayerNodes,

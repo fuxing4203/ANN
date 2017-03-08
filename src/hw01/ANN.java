@@ -16,22 +16,35 @@ package hw01;
 import java.util.ArrayList;
 
 /**
+ * Main class for the ANN structure, contains multiple outputs and layers.
  *
  * @author haoyuxiong
  */
 public class ANN {
 
+    /**
+     * A list of subANN
+     */
     private ArrayList<SUB_ANN> subANNList;
+
+    /**
+     * Number of inputs
+     */
     private int numInp;
+
+    /**
+     * Number of nodes per hidden layer
+     */
     private int numNodesInHiddenLayers;
 
     /**
-     *
+     * Minimum SSE that controls the stop of the train iteration
      */
     public static double minSSE;
     private int numOut;
 
     /**
+     * Constructor for ANN
      *
      * @param numInp
      * @param numOut
@@ -55,14 +68,16 @@ public class ANN {
     }
 
     /**
+     * Get the subANN list
      *
-     * @return
+     * @return List of subANN
      */
     public ArrayList<SUB_ANN> getSubANNList() {
         return subANNList;
     }
 
     /**
+     * Set the subANN list
      *
      * @param subANNList
      */
@@ -71,14 +86,16 @@ public class ANN {
     }
 
     /**
+     * Get the number of inputs
      *
-     * @return
+     * @return int number of inputs
      */
     public int getNumInp() {
         return numInp;
     }
 
     /**
+     * Set the number of inputs
      *
      * @param numInp
      */
@@ -87,14 +104,16 @@ public class ANN {
     }
 
     /**
+     * Get number of nodes per hidden layer
      *
-     * @return
+     * @return int number of nodes per hidden layer
      */
     public int getNumNodesInHiddenLayers() {
         return numNodesInHiddenLayers;
     }
 
     /**
+     * Set number of nodes in hidden layer
      *
      * @param numNodesInHiddenLayers
      */
@@ -103,14 +122,16 @@ public class ANN {
     }
 
     /**
+     * Get minimum SSE
      *
-     * @return
+     * @return double minimum SSE
      */
     public static double getMinSSE() {
         return minSSE;
     }
 
     /**
+     * Set minimum SSE
      *
      * @param minSSE
      */
@@ -119,25 +140,28 @@ public class ANN {
     }
 
     /**
+     * Get number of outputs
      *
-     * @return
+     * @return int number of outputs
      */
     public int getNumOut() {
         return numOut;
     }
 
     /**
+     * Set number of outputs
      *
-     * @param numOut
+     * @param numOut int number of outputs
      */
     public void setNumOut(int numOut) {
         this.numOut = numOut;
     }
 
     /**
+     * Main method for ANN training, loops through the subANNs.
      *
      * @param data
-     * @return
+     * @return List of subANNs
      */
     public ArrayList<SUB_ANN> Train_ANN(double[][] data) {
         for (int i = 0; i < this.numOut; i++) {
@@ -148,9 +172,10 @@ public class ANN {
     }
 
     /**
+     * Main method for ANN classification.
      *
      * @param data
-     * @return
+     * @return double[][] output data 2D array
      */
     public int[][] Classify_ANN(double[][] data) {
         int[][] output2DArray = new int[data.length][this.numOut];

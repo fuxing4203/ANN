@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
+ * Client side class from displaying the menu, interact with user, and process
+ * input/output file information.
  *
  * @author haoyuxiong
  */
@@ -41,7 +43,7 @@ public class ANN_Client {
     static ANN ann;
 
     /**
-     * Main program for interacting with user and get user specified choices
+     * Main program for interacting with user and get user specified choices.
      *
      * @param args
      * @throws FileNotFoundException
@@ -102,6 +104,12 @@ public class ANN_Client {
         } while (true);
     }
 
+    /**
+     * Ask the user whether they want to train or classify, and return the
+     * choice.
+     *
+     * @return int representing the mode chosen by user
+     */
     private static int askMode() {
 
         int mode;
@@ -122,6 +130,12 @@ public class ANN_Client {
         return mode;
     }
 
+    /**
+     * Test if the input is either 1 or 2, prompt error message and keep asking
+     * until get the correct format input.
+     *
+     * @return int option of either 1 or 2
+     */
     private static int oneOrTwo() {
 
         int option;
@@ -143,6 +157,12 @@ public class ANN_Client {
         return option;
     }
 
+    /**
+     * Test if the input is either 1, 2, or 3, prompt error message and keep
+     * asking until get the correct format input.
+     *
+     * @return int option of 1, 2, or 3
+     */
     private static int oneTwoOrThree() {
 
         int option;
@@ -164,6 +184,11 @@ public class ANN_Client {
         return option;
     }
 
+    /**
+     * Ask the user for number of inputs, outputs, hidden layers, neurons per
+     * hidden layer, and the maximum SSE.
+     *
+     */
     private static void askInAndOutNum() {
 
         do {
@@ -192,6 +217,10 @@ public class ANN_Client {
         } while (true);
     }
 
+    /**
+     * Ask for the configuration file to take in, and call processConfigFile()
+     * to process and set the properties and weights.
+     */
     private static void askConfigFile() {
         do {
             System.out.print(
@@ -207,6 +236,10 @@ public class ANN_Client {
         } while (true);
     }
 
+    /**
+     * The major function for train, calls the train_ANN method and other helper
+     * functions.
+     */
     private static void train() {
 
         System.out.print("Please enter the filename of the training data file: ");
@@ -237,6 +270,10 @@ public class ANN_Client {
 
     }
 
+    /**
+     * The major function for classify, calls the classify_ANN method and other
+     * helper functions.
+     */
     private static void classify() throws FileNotFoundException {
 
         System.out.print("Please enter the filename of the input data file: ");
@@ -267,6 +304,11 @@ public class ANN_Client {
         out.close();
     }
 
+    /**
+     * Read input file and handles exceptions.
+     *
+     * @return Scanner Scanner from the input file.
+     */
     private static Scanner readInputFile() {
 
         String filename;
@@ -289,6 +331,12 @@ public class ANN_Client {
         return fScanner;
     }
 
+    /**
+     * Process input file, and store the information in a 2D array.
+     *
+     * @param fScanner
+     * @return double[][] 2D array containing the input data
+     */
     private static double[][] processInputFile(Scanner fScanner) {
 
         ArrayList<double[]> inputArray2D = new ArrayList<double[]>();
@@ -311,6 +359,12 @@ public class ANN_Client {
         return input2D;
     }
 
+    /**
+     * Process configuration file and set the properties and weights.
+     *
+     * @param filename
+     * @throws FileNotFoundException
+     */
     private static void processConfigFile(String filename) throws FileNotFoundException {
 
         File f = new File(filename);
@@ -366,6 +420,12 @@ public class ANN_Client {
         }
     }
 
+    /**
+     * Generate configuration file from trained ANN.
+     *
+     * @param subANNList
+     * @throws FileNotFoundException
+     */
     private static void generateConfigFile(ArrayList<SUB_ANN> subANNList) throws FileNotFoundException {
 
         System.out.print("Enter the desired name for the configuration file: ");
