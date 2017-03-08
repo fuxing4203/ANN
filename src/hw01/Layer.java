@@ -88,8 +88,8 @@ public class Layer {
         this.minSSE = minSSE;
     }
 
-    public double[] classify_Layer(double[] data,
-                                   int expectedOutputIndex) {
+    public double[] classify_Layer(double[] data
+    ) {
         double fgets;
 
         for (int i = 0; i < this.numOfNodes; i++) {

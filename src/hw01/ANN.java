@@ -1,11 +1,11 @@
 /* *****************************************
   * CSCI205 - Software Engineering and Design
   * Spring 2017 *
-  * Name: Haoyu Xiong and Jingya Wu
-  * Date: Mar 3, 2017
-  * Time: 8:53:25 PM *
+  * Name: NAMES of team members
+  * Date: Mar 7, 2017
+  * Time: 11:02:43 PM *
   * Project: csci205_hw
-  * Package: Assignment01
+  * Package: hw01
   * File: ANN
   * Description:
   *
@@ -21,128 +21,46 @@ import java.util.ArrayList;
  */
 public class ANN {
 
-    private ArrayList<HiddenLayer> hiddenLayerList;
-
-    private InputLayer inputLayer;
-
-    private OutputLayer outputLayer;
-
-    private int numOfLayers;
-
-    private int numOfLayerLayers;
-
-    private int numIp;
-
+    private ArrayList<SUB_ANN> subANNList;
+    private int numInp;
+    private int numNodesInHiddenLayers;
+    public static double minSSE;
     private int numOut;
 
-    private static double minSSE = 0.001;
-
-    private int numNodesInHiddenLayers;
-
-    public ANN(int numInp, int numOut, int numOfLayers,
-               int numNodesInHiddenLayers, double minSSE) {
-
-        this.numOfLayers = numOfLayers;
-
-        this.numOfLayerLayers = this.numOfLayers - 1;
-
+    public ANN(int numInp, int numOfLayers,
+               int numNodesInHiddenLayers, int numOut, double minSSE) {
+        this.numInp = numInp;
         this.numOut = numOut;
-
-        this.numIp = numInp;
-
+        this.numNodesInHiddenLayers = this.numNodesInHiddenLayers;
         ANN.minSSE = minSSE;
-
-        this.numNodesInHiddenLayers = numNodesInHiddenLayers;
-
-        this.inputLayer = new InputLayer(numInp, numOut);
-
-        this.hiddenLayerList = new ArrayList<HiddenLayer>();
-        this.outputLayer = new OutputLayer(numNodesInHiddenLayers, numOut);
-
-        int numPrevNodes = numInp;
-
-        for (int i = 0; i < numOfLayers - 2; i++) {
-            this.hiddenLayerList.add(new HiddenLayer(numPrevNodes,
-                                                     numNodesInHiddenLayers));
-            numPrevNodes = numNodesInHiddenLayers;
+        subANNList = new ArrayList<SUB_ANN>();
+        for (int i = 0; i < this.numOut; i++) {
+            subANNList.add(new SUB_ANN(numInp, numOfLayers,
+                                       numNodesInHiddenLayers));
 
         }
 
-        this.hiddenLayerList.add(new HiddenLayer(numPrevNodes, numOut));
     }
 
-    public void train_ANN(double[][] data) {
-        int row = data.length;
-        int col = data[0].length;
-        double SSE;
-        double error;
-        //double[] inputDataRow;
-        double[] outputDataRow;
-        double actualOutput;
-        double expectedOutput;
-        ArrayList<Perceptron> prevLayerNodes;
-
+    public ArrayList<SUB_ANN> Train_ANN(double[][] data) {
         for (int i = 0; i < this.numOut; i++) {
-
-            SSE = 0;
-
-            for (int j = 0; j < row; j++) {
-
-                outputDataRow = data[j];
-
-                for (int z = 0; z < this.numOfLayerLayers; z++) {
-
-                    outputDataRow = this.hiddenLayerList.get(z).classify_Layer(
-                            outputDataRow,
-                            i + this.numIp);
-
-                }
-                actualOutput = this.outputLayer.classify_NoOfOutputNode(
-                        outputDataRow, i);
-
-                expectedOutput = data[j][this.numIp + i] - actualOutput;
-                SSE += (expectedOutput - actualOutput);
-
-                if (this.numOfLayerLayers - 1 > 0) {
-                    //train OutputLayer
-                    outputDataRow = this.outputLayer.train_NoOfOutputNode(
-                            actualOutput,
-                            expectedOutput,
-                            this.hiddenLayerList.get(
-                                    this.numOfLayerLayers - 2).getFnets(),
-                            i);
-
-                    //between OutputLayer and firstHiddenLayer
-                    prevLayerNodes = new ArrayList<Perceptron>();
-                    prevLayerNodes.add(this.outputLayer.getNodeAtNo(i));
-                    outputDataRow = this.hiddenLayerList.get(
-                            this.numOfLayerLayers - 2).train_HiddenLayer(
-                                    outputDataRow,
-                                    this.hiddenLayerList.get(z + 1).getNodes(),
-                                    this.hiddenLayerList.get(z - 1).getFnets()
-                            );
-
-                    //train HiddenLayers
-                    for (int z = this.numOfLayerLayers - 3; z > 0; z--) {
-
-                        outputDataRow = this.hiddenLayerList.get(z).train_HiddenLayer(
-                                outputDataRow,
-                                this.hiddenLayerList.get(z + 1).getNodes(),
-                                this.hiddenLayerList.get(z - 1).getFnets());
-
-                    }
-                }
-                else {
-                    this.outputLayer.train_NoOfOutputNode(actualOutput,
-                                                          expectedOutput,
-                                                          data[j],
-                                                          i);
-
-                }
-
-            }
+            this.subANNList.get(i).train_SUB_ANN(data, i);
 
         }
+        return subANNList;
+    }
+
+    public double[][] Classify_ANN(double[][] data) {
+        double[][] output2DArray = new double[data.length][this.numOut];
+        double output;
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < this.numOut; j++) {
+                output = this.subANNList.get(j).Classify_SUB_ANN(data[i]);
+                output2DArray[i][j] = output;
+
+            }
+        }
+        return output2DArray;
 
     }
 

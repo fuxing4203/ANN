@@ -24,7 +24,7 @@ public class InputLayer {
     private int numInp;
     private int numOut;
 
-    public InputLayer(int numInp, int numOut) {
+    public InputLayer(int numInp) {
 
         this.numInp = numInp;
 
