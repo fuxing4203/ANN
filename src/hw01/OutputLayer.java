@@ -37,7 +37,7 @@ public class OutputLayer extends Layer {
         return actual * (1 - actual) * (expected - actual);
     }
 
-    public double[] train_OutputNode(double expected, double actual,
+    public double[] train_OutputNode(double actual, double expected,
                                      double[] fNets) {
         double[] returnLittleDelta = new double[1];
         double LittleDeltaOfOutputNode = this.calculateLittleDeltaOfOutputLayer(
@@ -46,7 +46,7 @@ public class OutputLayer extends Layer {
         returnLittleDelta[0] = LittleDeltaOfOutputNode;
         this.getNodeAtNo(0).train_Perceptron(fNets,
                                              LittleDeltaOfOutputNode);
-
+        System.out.printf("%f, %f\n", expected, actual);
         return returnLittleDelta;
     }
 

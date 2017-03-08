@@ -55,17 +55,18 @@ public class SUB_ANN {
 
         int numPrevNodes = numInp;
 
-        for (int i = 0; i < numOfLayers - 3; i++) {
+        for (int i = 0; i < numOfLayers - 2; i++) {
             this.hiddenLayerList.add(new HiddenLayer(numPrevNodes,
                                                      numNodesInHiddenLayers));
             numPrevNodes = numNodesInHiddenLayers;
 
         }
-
+        /*
         if (numOfLayers - 2 > 0) {
 
             this.hiddenLayerList.add(new HiddenLayer(numPrevNodes, 1));
         }
+         */
     }
 
     public double Feed_Forward_Train_SUB_ANN(
@@ -82,6 +83,7 @@ public class SUB_ANN {
                 outputDataRow);
 
         double expectedOutput = inputDataAtRowJ[this.numIp + no];
+        //System.out.printf("%f, %f\n", expectedOutput, actualOutput);
         return expectedOutput - actualOutput;
     }
 
@@ -96,17 +98,17 @@ public class SUB_ANN {
                     actual,
                     expected,
                     this.hiddenLayerList.get(
-                            this.numOfLayerLayers - 2).getFnets());
+                            this.numOfLayerLayers - 2).getfNets());
 
             //between OutputLayer and firstHiddenLayer
             prevLayerNodes = this.outputLayer.getNodes();
 
-            for (int z = this.numOfLayerLayers - 2; z > 0; z++) {
+            for (int z = this.numOfLayerLayers - 2; z > 0; z--) {
                 outputDataRow = this.hiddenLayerList.get(
                         z).train_HiddenLayer(
                                 outputDataRow,
                                 prevLayerNodes,
-                                this.hiddenLayerList.get(z - 1).getFnets()
+                                this.hiddenLayerList.get(z - 1).getfNets()
                         );
                 prevLayerNodes = this.hiddenLayerList.get(z).getNodes();
 
@@ -137,10 +139,10 @@ public class SUB_ANN {
 
             for (int j = 0; j < row; j++) {
 
-                error = Feed_Forward_Train_SUB_ANN(data[j], no);
-                SSE += error;
+                error = this.Feed_Forward_Train_SUB_ANN(data[j], no);
+                SSE += Math.pow(error, 2);
                 expectedOutput = data[j][this.numIp + no];
-                actualOutput = expectedOutput + error;
+                actualOutput = expectedOutput - error;
 
                 this.Back_Propagation_Train_SUB_ANN(actualOutput, expectedOutput,
                                                     data[j]);

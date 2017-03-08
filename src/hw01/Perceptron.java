@@ -37,7 +37,7 @@ public class Perceptron {
         this.weights = new ArrayList<Double>();
         Random randomDoubleGenerator = new Random();
         this.theta = (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp;
-        for (int i = 0; i < numInp + 1; i++) {
+        for (int i = 0; i < numInp; i++) {
             this.weights.add(
                     (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp);
         }
@@ -71,12 +71,16 @@ public class Perceptron {
     public void train_Perceptron(double[] fgets, double littleDelta) {
         double changeOfWeight;
 
-        theta += alpha * (-1) * littleDelta;
+        double changeOfTheta = alpha * (-1) * littleDelta;
+        this.theta += changeOfTheta;
+
+        System.out.printf("theta,%f, change, %f\n", this.theta, changeOfTheta);
 
         for (int i = 0; i < this.getNumInp(); i++) {
+            System.out.printf("fgetsi, %f\n", fgets[i]);
             changeOfWeight = Perceptron.calculateDeltaWeight(fgets[i],
                                                              littleDelta);
-
+            System.out.printf("weight change, %f\n", changeOfWeight);
             this.changeWeightAtIndex(changeOfWeight, i);
         }
 
@@ -92,11 +96,12 @@ public class Perceptron {
 
     public static double calculateDeltaWeight(double prevFnet,
                                               double littleDelta) {
+        System.out.printf("delta,%f\n", littleDelta);
         return Perceptron.alpha * prevFnet * littleDelta;
     }
 
     public double classify_Perceptron(double[] classify_Data1) {
-        double net = this.theta;
+        double net = (-1) * this.theta;
         for (int i = 0; i < this.weights.size(); i++) {
             net += classify_Data1[i] * this.weights.get(i);
 

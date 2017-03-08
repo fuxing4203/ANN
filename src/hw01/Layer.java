@@ -95,7 +95,7 @@ public class Layer {
         for (int i = 0; i < this.numOfNodes; i++) {
             fgets = this.Nodes.get(i).classify_Perceptron(data);
             this.fNets[i] = fgets;
-
+            System.out.printf("fgets, %f\n", fgets);
         }
         return this.getfNets();
 

@@ -247,7 +247,7 @@ public class ANN_Client {
         PrintWriter out = new PrintWriter(outputName);
 
         for (int i = 0; i < output2D.length; i++) {
-            for (int j = 0; i < output2D[i].length; j++) {
+            for (int j = 0; j < output2D[i].length; j++) {
                 if (j != 0) {
                     System.out.print(", ");
                     out.print(", ");
@@ -331,7 +331,10 @@ public class ANN_Client {
                     String[] lineArr = line.split(",");
                     ArrayList<Double> weights = new ArrayList<Double>();
 
-                    for (int i = 0; i < lineArr.length; i++) {
+                    double theta = Double.parseDouble(lineArr[0]);
+                    perceptron.setTheta(theta);
+
+                    for (int i = 1; i < lineArr.length; i++) {
                         Double w = Double.parseDouble(lineArr[i]);
                         weights.add(w);
                     }
@@ -359,7 +362,10 @@ public class ANN_Client {
                 for (Perceptron perceptron : perceptrons) {
                     ArrayList<Double> weights = perceptron.getWeights();
 
+                    out.printf("%f,", perceptron.getTheta());
+
                     for (int i = 0; i < weights.size() - 1; i++) {
+                        System.out.println("print");
                         out.printf("%f,", weights.get(i));
                     }
 
@@ -377,7 +383,7 @@ public class ANN_Client {
                     out.printf("%f,", weights.get(i));
                 }
 
-                out.printf("%f\n", weights.get(weights.size()) - 1);
+                out.printf("%f\n", weights.get(weights.size() - 1));
             }
         }
 

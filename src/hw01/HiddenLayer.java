@@ -21,8 +21,6 @@ import java.util.ArrayList;
  */
 public class HiddenLayer extends Layer {
 
-    private double[] fnets;
-
     /**
      *
      * @param numOfPrevNodes
@@ -30,29 +28,25 @@ public class HiddenLayer extends Layer {
      */
     public HiddenLayer(int numOfPrevNodes, int numOfNodes) {
         super(numOfPrevNodes, numOfNodes);
-        fnets = new double[numOfNodes];
 
     }
 
-    public double[] getFnets() {
-        return fnets;
-    }
-
-    public void setFnets(double[] fnets) {
-        this.fnets = fnets;
+    @Override
+    public double[] getfNets() {
+        return super.getfNets();
     }
 
     public double[] train_HiddenLayer(double[] kLittleDeltas,
                                       ArrayList<Perceptron> prevLayerNodes,
                                       double[] prevFgets) {
-        double[] returnLittleDelta = new double[prevLayerNodes.size()];
+        double[] returnLittleDelta = new double[this.getNumOfNodes()];
         double littleDelta;
 
         for (int i = 0; i < this.getNumOfNodes(); i++) {
             littleDelta = calculateLittleDeltaAtNoNode(i, this.getFnetsAtNoNode(
                                                        i), prevLayerNodes,
                                                        kLittleDeltas);
-            this.getNodeAtNo(i).train_Perceptron(fnets, littleDelta);
+            this.getNodeAtNo(i).train_Perceptron(this.getfNets(), littleDelta);
             returnLittleDelta[i] = littleDelta;
 
         }
