@@ -347,7 +347,7 @@ public class ANN_Client {
         String configFilename = in.next();
 
         PrintWriter out = new PrintWriter(configFilename);
-        out.printf("%d,%d,%d,%d,%d\n", numIN, numOUT, numLayer, numNeuron,
+        out.printf("%d,%d,%d,%d,%f\n", numIN, numOUT, numLayer, numNeuron,
                    maxSSE);
 
         for (SUB_ANN subANN : subANNList) {
@@ -377,7 +377,7 @@ public class ANN_Client {
                     out.printf("%f,", weights.get(i));
                 }
 
-                out.printf("%f\n", weights.get(weights.size()));
+                out.printf("%f\n", weights.get(weights.size()) - 1);
             }
         }
 

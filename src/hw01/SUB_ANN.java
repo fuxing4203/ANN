@@ -35,7 +35,7 @@ public class SUB_ANN {
 
     public SUB_ANN(int numInp, int numOfLayers,
                    int numNodesInHiddenLayers) {
-
+        System.out.println("Constructor");
         this.numOfLayers = numOfLayers;
 
         this.numOfLayerLayers = this.numOfLayers - 1;
@@ -45,11 +45,17 @@ public class SUB_ANN {
         this.numNodesInHiddenLayers = numNodesInHiddenLayers;
 
         this.hiddenLayerList = new ArrayList<HiddenLayer>();
-        this.outputLayer = new OutputLayer(numNodesInHiddenLayers);
+
+        if (numOfLayers > 2) {
+            this.outputLayer = new OutputLayer(numNodesInHiddenLayers);
+        }
+        else {
+            this.outputLayer = new OutputLayer(numIp);
+        }
 
         int numPrevNodes = numInp;
 
-        for (int i = 0; i < numOfLayers - 2; i++) {
+        for (int i = 0; i < numOfLayers - 3; i++) {
             this.hiddenLayerList.add(new HiddenLayer(numPrevNodes,
                                                      numNodesInHiddenLayers));
             numPrevNodes = numNodesInHiddenLayers;

@@ -27,14 +27,14 @@ public class ANN {
     public static double minSSE;
     private int numOut;
 
-    public ANN(int numInp, int numOfLayers,
-               int numNodesInHiddenLayers, int numOut, double minSSE) {
+    public ANN(int numInp, int numOut, int numOfLayers,
+               int numNodesInHiddenLayers, double minSSE) {
         this.numInp = numInp;
         this.numOut = numOut;
         this.numNodesInHiddenLayers = this.numNodesInHiddenLayers;
         ANN.minSSE = minSSE;
         subANNList = new ArrayList<SUB_ANN>();
-        for (int i = 0; i < this.numOut; i++) {
+        for (int i = 0; i < numOut; i++) {
             subANNList.add(new SUB_ANN(numInp, numOfLayers,
                                        numNodesInHiddenLayers));
 

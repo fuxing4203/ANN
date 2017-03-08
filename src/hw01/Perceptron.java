@@ -36,9 +36,10 @@ public class Perceptron {
 
         this.weights = new ArrayList<Double>();
         Random randomDoubleGenerator = new Random();
-        this.theta = randomDoubleGenerator.nextDouble() - 0.5;
+        this.theta = (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp;
         for (int i = 0; i < numInp + 1; i++) {
-            this.weights.add(randomDoubleGenerator.nextDouble() - 0.5);
+            this.weights.add(
+                    (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp);
         }
 
     }
@@ -69,6 +70,9 @@ public class Perceptron {
 
     public void train_Perceptron(double[] fgets, double littleDelta) {
         double changeOfWeight;
+
+        theta += alpha * (-1) * littleDelta;
+
         for (int i = 0; i < this.getNumInp(); i++) {
             changeOfWeight = Perceptron.calculateDeltaWeight(fgets[i],
                                                              littleDelta);
