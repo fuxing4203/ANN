@@ -101,7 +101,7 @@ public class Perceptron {
 
     }
 
-    public int step_function(double net) {
+    public static int step_function(double net) {
         if (net >= 0) {
             return 1;
         }

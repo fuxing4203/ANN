@@ -23,8 +23,6 @@ public class SUB_ANN {
 
     private ArrayList<HiddenLayer> hiddenLayerList;
 
-    private InputLayer inputLayer;
-
     private OutputLayer outputLayer;
 
     private int numOfLayers;
@@ -45,8 +43,6 @@ public class SUB_ANN {
         this.numIp = numInp;
 
         this.numNodesInHiddenLayers = numNodesInHiddenLayers;
-
-        this.inputLayer = new InputLayer(numInp);
 
         this.hiddenLayerList = new ArrayList<HiddenLayer>();
         this.outputLayer = new OutputLayer(numNodesInHiddenLayers);
@@ -170,14 +166,6 @@ public class SUB_ANN {
 
     public void setHiddenLayerList(ArrayList<HiddenLayer> hiddenLayerList) {
         this.hiddenLayerList = hiddenLayerList;
-    }
-
-    public InputLayer getInputLayer() {
-        return inputLayer;
-    }
-
-    public void setInputLayer(InputLayer inputLayer) {
-        this.inputLayer = inputLayer;
     }
 
     public OutputLayer getOutputLayer() {
