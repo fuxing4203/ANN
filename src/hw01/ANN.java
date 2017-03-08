@@ -42,6 +42,46 @@ public class ANN {
 
     }
 
+    public ArrayList<SUB_ANN> getSubANNList() {
+        return subANNList;
+    }
+
+    public void setSubANNList(ArrayList<SUB_ANN> subANNList) {
+        this.subANNList = subANNList;
+    }
+
+    public int getNumInp() {
+        return numInp;
+    }
+
+    public void setNumInp(int numInp) {
+        this.numInp = numInp;
+    }
+
+    public int getNumNodesInHiddenLayers() {
+        return numNodesInHiddenLayers;
+    }
+
+    public void setNumNodesInHiddenLayers(int numNodesInHiddenLayers) {
+        this.numNodesInHiddenLayers = numNodesInHiddenLayers;
+    }
+
+    public static double getMinSSE() {
+        return minSSE;
+    }
+
+    public static void setMinSSE(double minSSE) {
+        ANN.minSSE = minSSE;
+    }
+
+    public int getNumOut() {
+        return numOut;
+    }
+
+    public void setNumOut(int numOut) {
+        this.numOut = numOut;
+    }
+
     public ArrayList<SUB_ANN> Train_ANN(double[][] data) {
         for (int i = 0; i < this.numOut; i++) {
             this.subANNList.get(i).train_SUB_ANN(data, i);

@@ -164,4 +164,60 @@ public class SUB_ANN {
         return actualOutput;
     }
 
+    public ArrayList<HiddenLayer> getHiddenLayerList() {
+        return hiddenLayerList;
+    }
+
+    public void setHiddenLayerList(ArrayList<HiddenLayer> hiddenLayerList) {
+        this.hiddenLayerList = hiddenLayerList;
+    }
+
+    public InputLayer getInputLayer() {
+        return inputLayer;
+    }
+
+    public void setInputLayer(InputLayer inputLayer) {
+        this.inputLayer = inputLayer;
+    }
+
+    public OutputLayer getOutputLayer() {
+        return outputLayer;
+    }
+
+    public void setOutputLayer(OutputLayer outputLayer) {
+        this.outputLayer = outputLayer;
+    }
+
+    public int getNumOfLayers() {
+        return numOfLayers;
+    }
+
+    public void setNumOfLayers(int numOfLayers) {
+        this.numOfLayers = numOfLayers;
+    }
+
+    public int getNumOfLayerLayers() {
+        return numOfLayerLayers;
+    }
+
+    public void setNumOfLayerLayers(int numOfLayerLayers) {
+        this.numOfLayerLayers = numOfLayerLayers;
+    }
+
+    public int getNumIp() {
+        return numIp;
+    }
+
+    public void setNumIp(int numIp) {
+        this.numIp = numIp;
+    }
+
+    public int getNumNodesInHiddenLayers() {
+        return numNodesInHiddenLayers;
+    }
+
+    public void setNumNodesInHiddenLayers(int numNodesInHiddenLayers) {
+        this.numNodesInHiddenLayers = numNodesInHiddenLayers;
+    }
+
 }

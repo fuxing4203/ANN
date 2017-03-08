@@ -78,6 +78,14 @@ public class Perceptron {
 
     }
 
+    public double getTheta() {
+        return theta;
+    }
+
+    public void setTheta(double theta) {
+        this.theta = theta;
+    }
+
     public static double calculateDeltaWeight(double prevFnet,
                                               double littleDelta) {
         return Perceptron.alpha * prevFnet * littleDelta;
