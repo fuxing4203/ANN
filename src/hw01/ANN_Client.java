@@ -317,7 +317,7 @@ public class ANN_Client {
         numOUT = Integer.parseInt(dataArray[1]);
         numLayer = Integer.parseInt(dataArray[2]);
         numNeuron = Integer.parseInt(dataArray[3]);
-        maxSSE = Integer.parseInt(dataArray[4]);
+        maxSSE = Double.parseDouble(dataArray[4]);
 
         ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
 
@@ -340,6 +340,22 @@ public class ANN_Client {
                     }
                     perceptron.setWeights(weights);
                 }
+            }
+
+            for (Perceptron perceptron : subANN.getOutputLayer().getNodes()) {
+
+                String line = configIn.nextLine();
+                String[] lineArr = line.split(",");
+                ArrayList<Double> weights = new ArrayList<Double>();
+
+                double theta = Double.parseDouble(lineArr[0]);
+                perceptron.setTheta(theta);
+
+                for (int i = 1; i < lineArr.length; i++) {
+                    Double w = Double.parseDouble(lineArr[i]);
+                    weights.add(w);
+                }
+                perceptron.setWeights(weights);
             }
         }
     }
@@ -365,11 +381,10 @@ public class ANN_Client {
                     out.printf("%f,", perceptron.getTheta());
 
                     for (int i = 0; i < weights.size() - 1; i++) {
-                        System.out.println("print");
                         out.printf("%f,", weights.get(i));
                     }
 
-                    out.printf("%f\n", weights.get(weights.size()));
+                    out.printf("%f\n", weights.get(weights.size() - 1));
                 }
             }
 
@@ -378,6 +393,8 @@ public class ANN_Client {
 
             for (Perceptron perceptron : perceptrons) {
                 ArrayList<Double> weights = perceptron.getWeights();
+
+                out.printf("%f,", perceptron.getTheta());
 
                 for (int i = 0; i < weights.size() - 1; i++) {
                     out.printf("%f,", weights.get(i));

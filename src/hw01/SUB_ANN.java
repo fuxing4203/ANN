@@ -141,6 +141,7 @@ public class SUB_ANN {
 
                 error = this.Feed_Forward_Train_SUB_ANN(data[j], no);
                 SSE += Math.pow(error, 2);
+                //System.out.printf("Error: %f, SSE: %f\n", error, SSE);
                 expectedOutput = data[j][this.numIp + no];
                 actualOutput = expectedOutput - error;
 
