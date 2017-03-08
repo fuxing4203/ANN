@@ -209,7 +209,7 @@ public class ANN_Client {
 
         double[][] input2D = processInputFile(fScanner);
 
-        ArrayList<Layer> layers = ann.train_ANN(input2D);
+        ArrayList<SUB_ANN> subANNList = ann.Train_ANN(input2D);
 
         System.out.println(
                 "Would you like to save the network configuration to a configuration file? ");
@@ -221,7 +221,7 @@ public class ANN_Client {
         if (save == 1) {
             do {
                 try {
-                    generateConfigFile(layers);
+                    generateConfigFile(subANNList);
                     break;
                 } catch (FileNotFoundException e) {
                     System.out.println("File not found, try again!");
@@ -239,7 +239,7 @@ public class ANN_Client {
 
         double[][] input2D = processInputFile(fScanner);
 
-        int[][] output2D = ann.classify_ANN(input2D);
+        int[][] output2D = ann.Classify_ANN(input2D);
 
         System.out.print(
                 "Please enter the filename that the output should be saved into (including file extension): ");
@@ -321,17 +321,27 @@ public class ANN_Client {
 
         ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
 
-        for (HiddenLayer hLayer : ann.getHiddenLayerList()) {
-            String line = configIn.nextLine();
-            String[] lineArr = line.split(",");
+        for (SUB_ANN subANN : ann.getSubANNList()) {
 
-            for (String weight : lineArr) {
-                Double w = Double.parseDouble(weight);
+            for (HiddenLayer hLayer : subANN.getHiddenLayerList()) {
+
+                for (Perceptron perceptron : hLayer.getNodes()) {
+
+                    String line = configIn.nextLine();
+                    String[] lineArr = line.split(",");
+                    ArrayList<Double> weights = new ArrayList<Double>();
+
+                    for (int i = 0; i < lineArr.length; i++) {
+                        Double w = Double.parseDouble(lineArr[i]);
+                        weights.add(w);
+                    }
+                    perceptron.setWeights(weights);
+                }
             }
         }
     }
 
-    private static void generateConfigFile(ArrayList<Layer> layers) throws FileNotFoundException {
+    private static void generateConfigFile(ArrayList<SUB_ANN> subANNList) throws FileNotFoundException {
 
         System.out.print("Enter the desired name for the configuration file: ");
         String configFilename = in.next();
@@ -340,8 +350,25 @@ public class ANN_Client {
         out.printf("%d,%d,%d,%d,%d\n", numIN, numOUT, numLayer, numNeuron,
                    maxSSE);
 
-        for (Layer layer : layers) {
-            ArrayList<Perceptron> perceptrons = layer.getNodes();
+        for (SUB_ANN subANN : subANNList) {
+            ArrayList<HiddenLayer> layers = subANN.getHiddenLayerList();
+
+            for (Layer layer : layers) {
+                ArrayList<Perceptron> perceptrons = layer.getNodes();
+
+                for (Perceptron perceptron : perceptrons) {
+                    ArrayList<Double> weights = perceptron.getWeights();
+
+                    for (int i = 0; i < weights.size() - 1; i++) {
+                        out.printf("%f,", weights.get(i));
+                    }
+
+                    out.printf("%f\n", weights.get(weights.size()));
+                }
+            }
+
+            OutputLayer oLayer = subANN.getOutputLayer();
+            ArrayList<Perceptron> perceptrons = oLayer.getNodes();
 
             for (Perceptron perceptron : perceptrons) {
                 ArrayList<Double> weights = perceptron.getWeights();
