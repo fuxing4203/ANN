@@ -11,6 +11,11 @@
   *
   * ****************************************
  */
+
+ /*
+ * ANN: line 103, -actual output?
+ *
+ */
 package hw01;
 
 import java.io.File;
@@ -52,6 +57,7 @@ public class ANN_Client {
 
             askInAndOutNum();
 
+            ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
         }
 
         // Read in config file
@@ -60,8 +66,6 @@ public class ANN_Client {
             askConfigFile();
 
         }
-
-        ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
 
         do {
 
@@ -164,8 +168,8 @@ public class ANN_Client {
                 System.out.print("Please enter the number of outputs: ");
                 numOUT = in.nextInt();
 
-                System.out.print("Please enter the number of layers: ");
-                numLayer = in.nextInt();
+                System.out.print("Please enter the number of hidden layers: ");
+                numLayer = in.nextInt() + 2;
 
                 System.out.print(
                         "Please enter the number of nerons in a hidden layer: ");
@@ -315,6 +319,16 @@ public class ANN_Client {
         numNeuron = Integer.parseInt(dataArray[3]);
         maxSSE = Integer.parseInt(dataArray[4]);
 
+        ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
+
+        for (HiddenLayer hLayer : ann.getHiddenLayerList()) {
+            String line = configIn.nextLine();
+            String[] lineArr = line.split(",");
+
+            for (String weight : lineArr) {
+                Double w = Double.parseDouble(weight);
+            }
+        }
     }
 
     private static void generateConfigFile(ArrayList<Layer> layers) throws FileNotFoundException {
