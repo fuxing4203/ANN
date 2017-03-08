@@ -46,7 +46,7 @@ public class HiddenLayer extends Layer {
             littleDelta = calculateLittleDeltaAtNoNode(i, this.getFnetsAtNoNode(
                                                        i), prevLayerNodes,
                                                        kLittleDeltas);
-            this.getNodeAtNo(i).train_Perceptron(this.getfNets(), littleDelta);
+            this.getNodeAtNo(i).train_Perceptron(prevFgets, littleDelta);
             returnLittleDelta[i] = littleDelta;
 
         }

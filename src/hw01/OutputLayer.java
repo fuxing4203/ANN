@@ -46,7 +46,7 @@ public class OutputLayer extends Layer {
         returnLittleDelta[0] = LittleDeltaOfOutputNode;
         this.getNodeAtNo(0).train_Perceptron(fNets,
                                              LittleDeltaOfOutputNode);
-        System.out.printf("%f, %f\n", expected, actual);
+        //System.out.printf("%f, %f\n", expected, actual);
         return returnLittleDelta;
     }
 

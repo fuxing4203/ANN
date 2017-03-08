@@ -74,13 +74,12 @@ public class Perceptron {
         double changeOfTheta = alpha * (-1) * littleDelta;
         this.theta += changeOfTheta;
 
-        System.out.printf("theta,%f, change, %f\n", this.theta, changeOfTheta);
-
+        //System.out.printf("theta,%f, change, %f\n", this.theta, changeOfTheta);
         for (int i = 0; i < this.getNumInp(); i++) {
-            System.out.printf("fgetsi, %f\n", fgets[i]);
+            //System.out.printf("fgetsi, %f\n", fgets[i]);
             changeOfWeight = Perceptron.calculateDeltaWeight(fgets[i],
                                                              littleDelta);
-            System.out.printf("weight change, %f\n", changeOfWeight);
+            //System.out.printf("weight change, %f\n", changeOfWeight);
             this.changeWeightAtIndex(changeOfWeight, i);
         }
 
@@ -96,7 +95,7 @@ public class Perceptron {
 
     public static double calculateDeltaWeight(double prevFnet,
                                               double littleDelta) {
-        System.out.printf("delta,%f\n", littleDelta);
+        //System.out.printf("delta,%f\n", littleDelta);
         return Perceptron.alpha * prevFnet * littleDelta;
     }
 
@@ -111,7 +110,7 @@ public class Perceptron {
     }
 
     public static int step_function(double net) {
-        if (net >= 0) {
+        if (net >= 0.5) {
             return 1;
         }
         else {
@@ -128,7 +127,7 @@ public class Perceptron {
 
     public void changeWeightAtIndex(double deltaWeight, int index) {
 
-        this.getWeights().set(index, deltaWeight + this.getWeights().get(index));
+        this.weights.set(index, deltaWeight + this.weights.get(index));
 
     }
 
