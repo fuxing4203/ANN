@@ -14,6 +14,7 @@
 package hw01;
 
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +23,8 @@ import org.junit.Test;
  * @author haoyuxiong
  */
 public class OutputLayerTest {
+
+    static final double EPSILON = 1.0E-12;
 
     public OutputLayerTest() {
     }
@@ -35,52 +38,18 @@ public class OutputLayerTest {
     }
 
     /**
-     * Test of classify_OutputNode method, of class OutputLayer.
-     */
-    @Test
-    public void testClassify_OutputNode() {
-        System.out.println("classify_OutputNode");
-        double[] data = null;
-        OutputLayer instance = null;
-        double expResult = 0.0;
-        double result = instance.classify_OutputNode(data);
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of calculateLittleDeltaOfOutputLayer method, of class OutputLayer.
      */
     @Test
     public void testCalculateLittleDeltaOfOutputLayer() {
         System.out.println("calculateLittleDeltaOfOutputLayer");
-        double expected = 0.0;
-        double actual = 0.0;
-        OutputLayer instance = null;
-        double expResult = 0.0;
+        double expected = 1.0;
+        double actual = 0.8;
+        OutputLayer instance = new OutputLayer(3);
+        double expResult = 0.032;
         double result = instance.calculateLittleDeltaOfOutputLayer(expected,
                                                                    actual);
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+        assertEquals(expResult, result, EPSILON);
 
-    /**
-     * Test of train_OutputNode method, of class OutputLayer.
-     */
-    @Test
-    public void testTrain_OutputNode() {
-        System.out.println("train_OutputNode");
-        double actual = 0.0;
-        double expected = 0.0;
-        double[] fNets = null;
-        OutputLayer instance = null;
-        double[] expResult = null;
-        double[] result = instance.train_OutputNode(actual, expected, fNets);
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
-
 }
