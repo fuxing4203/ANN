@@ -28,6 +28,7 @@ public class Layer {
     private double[] fNets;
 
     /**
+     * The constructor for the Layer class
      *
      * @param numOfPrevNodes
      * @param numOfNodes
@@ -46,7 +47,7 @@ public class Layer {
 
     /**
      *
-     * @return
+     * @return double[] this returns the set of f(net) after classification
      */
     public double[] getfNets() {
         return fNets;
@@ -55,7 +56,8 @@ public class Layer {
     /**
      *
      * @param index
-     * @return
+     * @return double this returns the calculated f(net) at inputted index after
+     * classification
      */
     public double getFnetsAtNoNode(int index) {
         return this.fNets[index];
@@ -71,7 +73,7 @@ public class Layer {
 
     /**
      *
-     * @return
+     * @return int this returns the number of previous node as defined by inputs
      */
     public int getNumOfPrevNodes() {
         return numOfPrevNodes;
@@ -87,7 +89,7 @@ public class Layer {
 
     /**
      *
-     * @return
+     * @return int this returns the number of Nodes
      */
     public int getNumOfNodes() {
         return numOfNodes;
@@ -103,7 +105,7 @@ public class Layer {
 
     /**
      *
-     * @return
+     * @return ArrayList returns the nodes
      */
     public ArrayList<Perceptron> getNodes() {
         return Nodes;
@@ -118,9 +120,10 @@ public class Layer {
     }
 
     /**
+     * Get the node at the inputted index
      *
      * @param index
-     * @return
+     * @return Perceptron this returns the perceptron at the indicated index
      */
     public Perceptron getNodeAtNo(int index) {
         return this.getNodes().get(index);
@@ -129,7 +132,7 @@ public class Layer {
 
     /**
      *
-     * @return
+     * @return double the minimum SSE that the user inputted in.
      */
     public double getMinSSE() {
         return minSSE;
@@ -144,9 +147,10 @@ public class Layer {
     }
 
     /**
+     * classify the layer and get the sets of results for each of the nodes
      *
      * @param data
-     * @return
+     * @return double[] returns the f(net) after the classification
      */
     public double[] classify_Layer(double[] data
     ) {

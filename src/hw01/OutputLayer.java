@@ -30,9 +30,11 @@ public class OutputLayer extends Layer {
     }
 
     /**
+     * classify the layer and the single output node associate with it, then
+     * return the result
      *
      * @param data
-     * @return
+     * @return double returns the classification result of the output node
      */
     public double classify_OutputNode(double[] data) {
         double fGets;
@@ -42,10 +44,12 @@ public class OutputLayer extends Layer {
     }
 
     /**
+     * Using the classified actual output and the expected output to calculate
+     * the little delta for the output node
      *
      * @param expected
      * @param actual
-     * @return
+     * @return double returns the little delta calculated for the output node
      */
     public double calculateLittleDeltaOfOutputLayer(double expected,
                                                     double actual) {
@@ -54,10 +58,14 @@ public class OutputLayer extends Layer {
 
     /**
      *
+     * This function takes in the actual and expected output of the output node,
+     * returns the calculated little delta list, which actually only includes
+     * one of the output node
+     *
      * @param actual
      * @param expected
      * @param fNets
-     * @return
+     * @return double[] returns the little delta list
      */
     public double[] train_OutputNode(double actual, double expected,
                                      double[] fNets) {

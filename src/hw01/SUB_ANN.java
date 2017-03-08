@@ -34,6 +34,7 @@ public class SUB_ANN {
     private int numNodesInHiddenLayers;
 
     /**
+     * Constructor for SUB_ANN class
      *
      * @param numInp
      * @param numOfLayers
@@ -76,10 +77,11 @@ public class SUB_ANN {
     }
 
     /**
+     * This function calculates the f(net) of all the nodes in ANN and outputs
      *
      * @param inputDataAtRowJ
      * @param no
-     * @return
+     * @return double returns the error of this iteration
      */
     public double Feed_Forward_Train_SUB_ANN(
             double[] inputDataAtRowJ, int no) {
@@ -100,6 +102,8 @@ public class SUB_ANN {
     }
 
     /**
+     * This function goes back after feed_forward and change the weights of
+     * nodes based on little delta accordingly
      *
      * @param actual
      * @param expected

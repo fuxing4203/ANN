@@ -28,6 +28,7 @@ public class Perceptron {
     private int numInp;
 
     /**
+     * Constructor for the Perceptron Object
      *
      * @param numInp
      */
@@ -45,8 +46,7 @@ public class Perceptron {
     }
 
     /**
-     *
-     * @return
+     * @return ArrayList returns the weights stored in the perceptron
      */
     public ArrayList<Double> getWeights() {
         return weights;
@@ -54,7 +54,8 @@ public class Perceptron {
 
     /**
      *
-     * @return
+     * @return int returns the number of input, which alternatively is the
+     * number of weight
      */
     public int getNumInp() {
         return numInp;
@@ -77,6 +78,8 @@ public class Perceptron {
     }
 
     /**
+     * This functions takes in the f(net)s from the left layer and the little
+     * Delta from the right layer
      *
      * @param fgets
      * @param littleDelta
@@ -100,7 +103,7 @@ public class Perceptron {
 
     /**
      *
-     * @return
+     * @return double the theta
      */
     public double getTheta() {
         return theta;
@@ -115,10 +118,12 @@ public class Perceptron {
     }
 
     /**
+     * This function takes in the previous f(net) and the little delta and
+     * subsequently calculate the supposed change in the weight and returns it
      *
      * @param prevFnet
      * @param littleDelta
-     * @return
+     * @return double it returns the calculated change in the weight
      */
     public static double calculateDeltaWeight(double prevFnet,
                                               double littleDelta) {
@@ -128,8 +133,11 @@ public class Perceptron {
 
     /**
      *
+     * This function calculates the classification output based on the sigmoidal
+     * function
+     *
      * @param classify_Data1
-     * @return
+     * @return double returns the classified output
      */
     public double classify_Perceptron(double[] classify_Data1) {
         double net = (-1) * this.theta;
@@ -144,7 +152,7 @@ public class Perceptron {
     /**
      *
      * @param net
-     * @return
+     * @return int returns the result based on the step function
      */
     public static int step_function(double net) {
         if (net >= 0.5) {
@@ -157,9 +165,10 @@ public class Perceptron {
     }
 
     /**
+     * This function returns the activation output based on sig function
      *
      * @param net
-     * @return
+     * @return double the activation function output based on the sig algorithm
      */
     public double sigmoidal_activation_func(double net) {
 
@@ -168,6 +177,7 @@ public class Perceptron {
     }
 
     /**
+     * This function sets the change of weight
      *
      * @param deltaWeight
      * @param index
