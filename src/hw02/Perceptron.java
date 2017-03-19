@@ -26,6 +26,7 @@ public class Perceptron {
     private double theta;
     final static double alpha = 0.2;
     private int numInp;
+    public static SigmoidalActivationFunction sig = new SigmoidalActivationFunction();
 
     /**
      * Constructor for the Perceptron Object
@@ -145,7 +146,7 @@ public class Perceptron {
             net += classify_Data1[i] * this.weights.get(i);
 
         }
-        return sigmoidal_activation_func(net);
+        return sig.getValue(net);
 
     }
 

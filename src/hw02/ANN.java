@@ -177,13 +177,14 @@ public class ANN {
      * @param data
      * @return double[][] output data 2D array
      */
-    public int[][] Classify_ANN(double[][] data) {
-        int[][] output2DArray = new int[data.length][this.numOut];
+    public double[][] Classify_ANN(double[][] data) {
+        double[][] output2DArray = new double[data.length][this.numOut];
         double output;
+        StepActivationFunction step = new StepActivationFunction();
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < this.numOut; j++) {
                 output = this.subANNList.get(j).Classify_SUB_ANN(data[i]);
-                output2DArray[i][j] = Perceptron.step_function(output);
+                output2DArray[i][j] = step.getValue(output);
 
             }
         }
