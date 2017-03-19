@@ -26,7 +26,13 @@ public class Perceptron {
     private double theta;
     final static double alpha = 0.2;
     private int numInp;
+
+    /**
+     *
+     */
     public static SigmoidalActivationFunction sig = new SigmoidalActivationFunction();
+    private static double mu = 0.5;
+    private ArrayList<Double> prevWeight;
 
     /**
      * Constructor for the Perceptron Object
@@ -37,10 +43,13 @@ public class Perceptron {
         this.numInp = numInp;
 
         this.weights = new ArrayList<Double>();
+        this.prevWeight = new ArrayList<Double>();
         Random randomDoubleGenerator = new Random();
         this.theta = (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp;
         for (int i = 0; i < numInp; i++) {
             this.weights.add(
+                    (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp);
+            this.prevWeight.add(
                     (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp);
         }
 
@@ -94,9 +103,11 @@ public class Perceptron {
         //System.out.printf("theta,%f, change, %f\n", this.theta, changeOfTheta);
         for (int i = 0; i < this.getNumInp(); i++) {
             //System.out.printf("fgetsi, %f\n", fgets[i]);
-            changeOfWeight = Perceptron.calculateDeltaWeight(fgets[i],
-                                                             littleDelta);
+            changeOfWeight = this.calculateDeltaWeight(fgets[i],
+                                                       littleDelta,
+                                                       this.prevWeight.get(i));
             //System.out.printf("weight change, %f\n", changeOfWeight);
+            this.updatePrevDeltaWeight(changeOfWeight, i);
             this.changeWeightAtIndex(changeOfWeight, i);
         }
 
@@ -124,12 +135,14 @@ public class Perceptron {
      *
      * @param prevFnet
      * @param littleDelta
+     * @param prevDeltaWeight
      * @return double it returns the calculated change in the weight
      */
     public static double calculateDeltaWeight(double prevFnet,
-                                              double littleDelta) {
+                                              double littleDelta,
+                                              double prevDeltaWeight) {
         //System.out.printf("delta,%f\n", littleDelta);
-        return Perceptron.alpha * prevFnet * littleDelta;
+        return Perceptron.alpha * prevFnet * littleDelta + prevDeltaWeight * Perceptron.mu;
     }
 
     /**
@@ -197,6 +210,16 @@ public class Perceptron {
     public double getWeightAtIndex(int index) {
         return this.getWeights().get(index);
 
+    }
+
+    /**
+     * Update ArrayList of 2D prevWeight
+     *
+     * @param weight
+     * @param index
+     */
+    public void updatePrevDeltaWeight(double weight, int index) {
+        this.prevWeight.set(index, weight);
     }
 
 }
