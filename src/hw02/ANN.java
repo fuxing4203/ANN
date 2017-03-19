@@ -20,7 +20,7 @@ import java.util.ArrayList;
  *
  * @author haoyuxiong
  */
-public class ANN {
+public class ANN implements java.io.Serializable {
 
     /**
      * A list of subANN
@@ -33,6 +33,11 @@ public class ANN {
     private int numInp;
 
     /**
+     * Number of layers
+     */
+    private int numLayers;
+
+    /**
      * Number of nodes per hidden layer
      */
     private int numNodesInHiddenLayers;
@@ -41,6 +46,10 @@ public class ANN {
      * Minimum SSE that controls the stop of the train iteration
      */
     public static double minSSE;
+
+    /**
+     * Number of outputs
+     */
     private int numOut;
 
     /**
@@ -56,6 +65,7 @@ public class ANN {
                int numNodesInHiddenLayers, double minSSE) {
         this.numInp = numInp;
         this.numOut = numOut;
+        this.numLayers = numOfLayers;
         this.numNodesInHiddenLayers = this.numNodesInHiddenLayers;
         ANN.minSSE = minSSE;
         subANNList = new ArrayList<SUB_ANN>();
@@ -181,10 +191,11 @@ public class ANN {
         double[][] output2DArray = new double[data.length][this.numOut];
         double output;
         StepActivationFunction step = new StepActivationFunction();
+        SigmoidalActivationFunction sig = new SigmoidalActivationFunction();
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < this.numOut; j++) {
                 output = this.subANNList.get(j).Classify_SUB_ANN(data[i]);
-                output2DArray[i][j] = step.getValue(output);
+                output2DArray[i][j] = output;
 
             }
         }
