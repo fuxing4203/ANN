@@ -282,7 +282,7 @@ public class ANN_Client {
 
         double[][] input2D = processInputFile(fScanner);
 
-        int[][] output2D = ann.Classify_ANN(input2D);
+        double[][] output2D = ann.Classify_ANN(input2D);
 
         System.out.print(
                 "Please enter the filename that the output should be saved into (including file extension): ");
@@ -295,8 +295,8 @@ public class ANN_Client {
                     System.out.print(", ");
                     out.print(", ");
                 }
-                System.out.printf("%d", output2D[i][j]);
-                out.printf("%d", output2D[i][j]);
+                System.out.printf("%.2f", output2D[i][j]);
+                out.printf("%.2f", output2D[i][j]);
             }
             System.out.println();
             out.println();
