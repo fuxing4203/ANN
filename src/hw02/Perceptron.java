@@ -20,7 +20,7 @@ import java.util.Random;
  *
  * @author haoyuxiong
  */
-public class Perceptron {
+public class Perceptron implements java.io.Serializable {
 
     private ArrayList<Double> weights;
     private double theta;

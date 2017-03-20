@@ -19,7 +19,7 @@ import java.util.ArrayList;
  *
  * @author haoyuxiong
  */
-public class SUB_ANN {
+public class SUB_ANN implements java.io.Serializable {
 
     private ArrayList<HiddenLayer> hiddenLayerList;
 

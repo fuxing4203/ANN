@@ -17,7 +17,7 @@ package hw02;
  *
  * @author haoyuxiong
  */
-public class OutputLayer extends Layer {
+public class OutputLayer extends Layer implements java.io.Serializable {
 
     /**
      *
