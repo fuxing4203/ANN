@@ -19,7 +19,12 @@
 package hw02;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -48,7 +53,7 @@ public class ANN_Client {
      * @param args
      * @throws FileNotFoundException
      */
-    public static void main(String args[]) throws FileNotFoundException {
+    public static void main(String args[]) throws FileNotFoundException, IOException {
 
         in = new Scanner(System.in);
 
@@ -221,7 +226,7 @@ public class ANN_Client {
      * Ask for the configuration file to take in, and call processConfigFile()
      * to process and set the properties and weights.
      */
-    private static void askConfigFile() {
+    private static void askConfigFile() throws IOException {
         do {
             System.out.print(
                     "Please enter the filename of the configuration file: ");
@@ -260,7 +265,7 @@ public class ANN_Client {
         if (save == 1) {
             do {
                 try {
-                    generateConfigFile(subANNList);
+                    generateConfigFile(ann);
                     break;
                 } catch (FileNotFoundException e) {
                     System.out.println("File not found, try again!");
@@ -365,8 +370,15 @@ public class ANN_Client {
      * @param filename
      * @throws FileNotFoundException
      */
-    private static void processConfigFile(String filename) throws FileNotFoundException {
-
+    private static void processConfigFile(String filename) throws FileNotFoundException, IOException {
+        try {
+            FileInputStream f = new FileInputStream(filename);
+            ObjectInputStream configIn = new ObjectInputStream(f);
+            ann = (ANN) configIn.readObject();
+        } catch (ClassNotFoundException e) {
+            System.out.println("ClassNotFoundException");
+        }
+        /*
         File f = new File(filename);
         Scanner configIn = new Scanner(f);
 
@@ -418,6 +430,7 @@ public class ANN_Client {
                 perceptron.setWeights(weights);
             }
         }
+         */
     }
 
     /**
@@ -426,11 +439,21 @@ public class ANN_Client {
      * @param subANNList
      * @throws FileNotFoundException
      */
-    private static void generateConfigFile(ArrayList<SUB_ANN> subANNList) throws FileNotFoundException {
+    private static void generateConfigFile(ANN ann) throws FileNotFoundException {
 
         System.out.print("Enter the desired name for the configuration file: ");
         String configFilename = in.next();
 
+        try {
+            FileOutputStream f = new FileOutputStream(configFilename);
+            ObjectOutputStream configOut = new ObjectOutputStream(f);
+
+            configOut.writeObject(ann);
+        } catch (IOException e) {
+            System.out.println("IOException");
+        }
+
+        /*
         PrintWriter out = new PrintWriter(configFilename);
         out.printf("%d,%d,%d,%d,%f\n", numIN, numOUT, numLayer, numNeuron,
                    maxSSE);
@@ -471,5 +494,6 @@ public class ANN_Client {
         }
 
         out.close();
+         */
     }
 }
