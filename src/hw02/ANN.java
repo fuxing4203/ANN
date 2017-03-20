@@ -13,6 +13,8 @@
  */
 package hw02;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -52,6 +54,16 @@ public class ANN implements java.io.Serializable {
      */
     private int numOut;
 
+    private StringBuilder trainingLog = new StringBuilder();
+
+    public StringBuilder getTrainingLog() {
+        return trainingLog;
+    }
+
+    public void setTrainingLog(StringBuilder trainingLog) {
+        this.trainingLog = trainingLog;
+    }
+
     /**
      * Constructor for ANN
      *
@@ -72,7 +84,6 @@ public class ANN implements java.io.Serializable {
         for (int i = 0; i < numOut; i++) {
             subANNList.add(new SUB_ANN(numInp, numOfLayers,
                                        numNodesInHiddenLayers));
-
         }
 
     }
@@ -173,11 +184,14 @@ public class ANN implements java.io.Serializable {
      * @param data
      * @return List of subANNs
      */
-    public ArrayList<SUB_ANN> Train_ANN(double[][] data) {
+    public ArrayList<SUB_ANN> Train_ANN(double[][] data) throws FileNotFoundException {
         for (int i = 0; i < this.numOut; i++) {
             this.subANNList.get(i).train_SUB_ANN(data, i);
-
+            this.trainingLog.append("Output").append(i).append("\n");
+            this.trainingLog.append(
+                    this.subANNList.get(i).getTrainingLog().toString());
         }
+        this.outputTrainingLog();
         return subANNList;
     }
 
@@ -203,4 +217,9 @@ public class ANN implements java.io.Serializable {
 
     }
 
+    public void outputTrainingLog() throws FileNotFoundException {
+        PrintWriter out = new PrintWriter("ANNTrainingLog.csv");
+        out.write(this.trainingLog.toString());
+        out.close();
+    }
 }

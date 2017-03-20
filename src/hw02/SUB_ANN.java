@@ -14,6 +14,7 @@
 package hw02;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -32,6 +33,13 @@ public class SUB_ANN implements java.io.Serializable {
     private int numIp;
 
     private int numNodesInHiddenLayers;
+    private StringBuilder trainingLog;
+
+    public StringBuilder getTrainingLog() {
+        return trainingLog;
+    }
+
+    private int epoch = 0;
 
     /**
      * Constructor for SUB_ANN class
@@ -52,7 +60,7 @@ public class SUB_ANN implements java.io.Serializable {
         this.numNodesInHiddenLayers = numNodesInHiddenLayers;
 
         this.hiddenLayerList = new ArrayList<HiddenLayer>();
-
+        this.trainingLog = new StringBuilder();
         if (numOfLayers > 2) {
             this.outputLayer = new OutputLayer(numNodesInHiddenLayers);
         }
@@ -163,9 +171,7 @@ public class SUB_ANN implements java.io.Serializable {
         double expectedOutput;
         do {
             SSE = 0;
-
             for (int j = 0; j < row; j++) {
-
                 error = this.Feed_Forward_Train_SUB_ANN(data[j], no);
                 SSE += Math.pow(error, 2);
                 //System.out.printf("Error: %f, SSE: %f\n", error, SSE);
@@ -174,9 +180,9 @@ public class SUB_ANN implements java.io.Serializable {
 
                 this.Back_Propagation_Train_SUB_ANN(actualOutput, expectedOutput,
                                                     data[j]);
-
+                this.addToTrainingLog(data[j]);
             }
-
+            this.epoch += 1;
         } while (SSE >= ANN.minSSE);
     }
 
@@ -297,4 +303,31 @@ public class SUB_ANN implements java.io.Serializable {
         this.numNodesInHiddenLayers = numNodesInHiddenLayers;
     }
 
+    public void addToTrainingLog(double datarow[]) {
+        this.trainingLog.append("Epoch#").append(this.epoch).append(",time,").append(
+                System.nanoTime()).append("\n");
+        this.trainingLog.append("input,").append(String.join(",",
+                                                             Arrays.toString(
+                                                                     datarow)));
+        for (int i = 0; i < this.hiddenLayerList.size(); i++) {
+            this.trainingLog.append("HiddenLayer").append(i).append("\n");
+            for (int j = 0; j < this.numNodesInHiddenLayers; j++) {
+                this.trainingLog.append("Weights,");
+                ArrayList<String> str = new ArrayList<String>();
+                for (Double weights : this.hiddenLayerList.get(i).getNodes().get(
+                        j).getWeights()) {
+                    str.add(weights.toString());
+                }
+                this.trainingLog.append(String.join(",", str));
+                this.trainingLog.append("\n");
+            }
+        }
+        this.trainingLog.append("OutputLayer,");
+        ArrayList<String> str = new ArrayList<String>();
+        for (Double weights : this.outputLayer.getNodes().get(0).getWeights()) {
+            str.add(weights.toString());
+        }
+        this.trainingLog.append(String.join(",", str));
+        this.trainingLog.append("\n");
+    }
 }
