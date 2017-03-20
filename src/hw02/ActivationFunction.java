@@ -19,6 +19,11 @@ package hw02;
  */
 public interface ActivationFunction {
 
+    /**
+     *
+     * @param input
+     * @return
+     */
     double getValue(double input);
 
 }
