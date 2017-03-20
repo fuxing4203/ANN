@@ -49,8 +49,7 @@ public class Perceptron implements java.io.Serializable {
         for (int i = 0; i < numInp; i++) {
             this.weights.add(
                     (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp);
-            this.prevWeight.add(
-                    (randomDoubleGenerator.nextDouble() - 0.5) * 4.8 / numInp);
+            this.prevWeight.add(0.0);
         }
 
     }
