@@ -19,7 +19,7 @@ import java.util.ArrayList;
  *
  * @author haoyuxiong
  */
-public class Layer {
+public class Layer implements java.io.Serializable {
 
     private int numOfPrevNodes;
     private int numOfNodes;

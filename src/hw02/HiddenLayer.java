@@ -19,7 +19,7 @@ import java.util.ArrayList;
  *
  * @author haoyuxiong
  */
-public class HiddenLayer extends Layer {
+public class HiddenLayer extends Layer implements java.io.Serializable {
 
     /**
      * Constructor for HiddenLayer
