@@ -245,7 +245,7 @@ public class ANN_Client {
      * The major function for train, calls the train_ANN method and other helper
      * functions.
      */
-    private static void train() {
+    private static void train() throws FileNotFoundException {
 
         System.out.print("Please enter the filename of the training data file: ");
 

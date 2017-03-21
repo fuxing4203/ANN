@@ -16,6 +16,7 @@ package hw02;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Main class for the ANN structure, contains multiple outputs and layers.
@@ -54,14 +55,10 @@ public class ANN implements java.io.Serializable {
      */
     private int numOut;
 
-    private StringBuilder trainingLog = new StringBuilder();
+    private StringBuilder trainingLog;
 
     public StringBuilder getTrainingLog() {
         return trainingLog;
-    }
-
-    public void setTrainingLog(StringBuilder trainingLog) {
-        this.trainingLog = trainingLog;
     }
 
     /**
@@ -85,7 +82,9 @@ public class ANN implements java.io.Serializable {
             subANNList.add(new SUB_ANN(numInp, numOfLayers,
                                        numNodesInHiddenLayers));
         }
-
+        this.trainingLog = new StringBuilder();
+        this.trainingLog.append("ANN,Time").append(System.nanoTime()).append(
+                ",Date,").append(new Date().toString());
     }
 
     /**
@@ -191,6 +190,9 @@ public class ANN implements java.io.Serializable {
             this.trainingLog.append(
                     this.subANNList.get(i).getTrainingLog().toString());
         }
+        this.trainingLog.append("Training Ended\n");
+        this.trainingLog.append("Time,").append(System.nanoTime()).append(
+                "Date,").append(new Date().toString());
         this.outputTrainingLog();
         return subANNList;
     }
