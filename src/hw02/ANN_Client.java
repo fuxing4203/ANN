@@ -45,6 +45,7 @@ public class ANN_Client {
     static int numOUT;
     static int numLayer;
     static int numNeuron;
+    static int activation;
     static double maxSSE;
     static int maxEpoch;
     static ANN ann;
@@ -72,7 +73,7 @@ public class ANN_Client {
 
             askInAndOutNum();
 
-            ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
+            ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE, maxEpoch);
         }
 
         // Read in config file
@@ -210,8 +211,14 @@ public class ANN_Client {
                 numLayer = in.nextInt() + 2;
 
                 System.out.print(
-                        "Please enter the number of nerons in a hidden layer: ");
+                        "Please enter the number of neurons in a hidden layer: ");
                 numNeuron = in.nextInt();
+
+                System.out.println(
+                        "Please choose between the following activation functions: ");
+                System.out.println("\t1. Sigmoidal activation function");
+                System.out.println("\t2. Soft sign activation function");
+                activation = oneOrTwo();
 
                 System.out.print("Please enter the maximum SSE: ");
                 maxSSE = in.nextDouble();
