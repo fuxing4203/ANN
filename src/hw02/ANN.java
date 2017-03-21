@@ -57,10 +57,6 @@ public class ANN implements java.io.Serializable {
 
     private StringBuilder trainingLog;
 
-    public StringBuilder getTrainingLog() {
-        return trainingLog;
-    }
-
     /**
      * Constructor for ANN
      *
@@ -83,8 +79,6 @@ public class ANN implements java.io.Serializable {
                                        numNodesInHiddenLayers));
         }
         this.trainingLog = new StringBuilder();
-        this.trainingLog.append("ANN,Time").append(System.nanoTime()).append(
-                ",Date,").append(new Date().toString());
     }
 
     /**
@@ -182,8 +176,11 @@ public class ANN implements java.io.Serializable {
      *
      * @param data
      * @return List of subANNs
+     * @throws java.io.FileNotFoundException
      */
     public ArrayList<SUB_ANN> Train_ANN(double[][] data) throws FileNotFoundException {
+        this.trainingLog.append("ANN,Time and Date,").append(
+                new Date().toString());;
         for (int i = 0; i < this.numOut; i++) {
             this.subANNList.get(i).train_SUB_ANN(data, i);
             this.trainingLog.append("Output").append(i).append("\n");
@@ -191,8 +188,7 @@ public class ANN implements java.io.Serializable {
                     this.subANNList.get(i).getTrainingLog().toString());
         }
         this.trainingLog.append("Training Ended\n");
-        this.trainingLog.append("Time,").append(System.nanoTime()).append(
-                "Date,").append(new Date().toString());
+        this.trainingLog.append("Time and Date,").append(new Date().toString());
         this.outputTrainingLog();
         return subANNList;
     }
@@ -219,6 +215,12 @@ public class ANN implements java.io.Serializable {
 
     }
 
+    /**
+     * Write Training Log to file
+     *
+     * @author Iris Fu
+     * @throws FileNotFoundException
+     */
     public void outputTrainingLog() throws FileNotFoundException {
         PrintWriter out = new PrintWriter("ANNTrainingLog.csv");
         out.write(this.trainingLog.toString());

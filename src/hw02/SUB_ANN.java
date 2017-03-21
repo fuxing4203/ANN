@@ -35,10 +35,6 @@ public class SUB_ANN implements java.io.Serializable {
     private int numNodesInHiddenLayers;
     private StringBuilder trainingLog;
 
-    public StringBuilder getTrainingLog() {
-        return trainingLog;
-    }
-
     private int epoch = 0;
 
     /**
@@ -50,7 +46,7 @@ public class SUB_ANN implements java.io.Serializable {
      */
     public SUB_ANN(int numInp, int numOfLayers,
                    int numNodesInHiddenLayers) {
-        System.out.println("Constructor");
+//        System.out.println("Constructor");
         this.numOfLayers = numOfLayers;
 
         this.numOfLayerLayers = this.numOfLayers - 1;
@@ -208,8 +204,17 @@ public class SUB_ANN implements java.io.Serializable {
     }
 
     /**
+     * Getter for TrainingLog
      *
-     * @return
+     * @return trainingLog
+     */
+    public StringBuilder getTrainingLog() {
+        return trainingLog;
+    }
+
+    /**
+     *
+     * @return hiddenLayerList
      */
     public ArrayList<HiddenLayer> getHiddenLayerList() {
         return hiddenLayerList;
@@ -225,7 +230,7 @@ public class SUB_ANN implements java.io.Serializable {
 
     /**
      *
-     * @return
+     * @return outputLayer
      */
     public OutputLayer getOutputLayer() {
         return outputLayer;
@@ -257,7 +262,7 @@ public class SUB_ANN implements java.io.Serializable {
 
     /**
      *
-     * @return
+     * @return numOfLayerLayers
      */
     public int getNumOfLayerLayers() {
         return numOfLayerLayers;
@@ -273,7 +278,7 @@ public class SUB_ANN implements java.io.Serializable {
 
     /**
      *
-     * @return
+     * @return numIp
      */
     public int getNumIp() {
         return numIp;
@@ -289,7 +294,7 @@ public class SUB_ANN implements java.io.Serializable {
 
     /**
      *
-     * @return
+     * @return numNodesInHiddenLayers
      */
     public int getNumNodesInHiddenLayers() {
         return numNodesInHiddenLayers;
@@ -303,12 +308,19 @@ public class SUB_ANN implements java.io.Serializable {
         this.numNodesInHiddenLayers = numNodesInHiddenLayers;
     }
 
+    /**
+     * Adding information including weights to Training Log
+     *
+     * @author Iris Fu
+     * @param datarow - row of inputs
+     */
     public void addToTrainingLog(double datarow[]) {
         this.trainingLog.append("Epoch#").append(this.epoch).append(",time,").append(
                 System.nanoTime()).append("\n");
         this.trainingLog.append("input,").append(String.join(",",
                                                              Arrays.toString(
-                                                                     datarow)));
+                                                                     datarow))).append(
+                        "\n");
         for (int i = 0; i < this.hiddenLayerList.size(); i++) {
             this.trainingLog.append("HiddenLayer").append(i).append("\n");
             for (int j = 0; j < this.numNodesInHiddenLayers; j++) {
