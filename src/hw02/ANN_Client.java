@@ -73,7 +73,8 @@ public class ANN_Client {
 
             askInAndOutNum();
 
-            ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE, maxEpoch);
+            ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE, maxEpoch,
+                          activation);
         }
 
         // Read in config file

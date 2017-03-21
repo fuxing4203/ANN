@@ -50,3 +50,13 @@ class SigmoidalActivationFunction implements ActivationFunction {
     }
 
 }
+
+class SoftSignActivationFunction implements ActivationFunction {
+
+    @Override
+    public double getValue(double input) {
+        return ((input / (1 + Math.abs(input))) + 1) / 2;
+
+    }
+
+}

@@ -31,6 +31,7 @@ public class Perceptron implements java.io.Serializable {
      *
      */
     public static SigmoidalActivationFunction sig = new SigmoidalActivationFunction();
+    public static SoftSignActivationFunction soft = new SoftSignActivationFunction();
     private static double mu = 0.5;
     private ArrayList<Double> prevWeight;
 
@@ -158,7 +159,11 @@ public class Perceptron implements java.io.Serializable {
             net += classify_Data1[i] * this.weights.get(i);
 
         }
-        return sig.getValue(net);
+        if (ANN.actFuncNum == 1) {
+            return sig.getValue(net);
+        }
+
+        return soft.getValue(net);
 
     }
 
