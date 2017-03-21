@@ -27,6 +27,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -45,6 +46,7 @@ public class ANN_Client {
     static int numLayer;
     static int numNeuron;
     static double maxSSE;
+    static int maxEpoch;
     static ANN ann;
 
     /**
@@ -53,7 +55,7 @@ public class ANN_Client {
      * @param args
      * @throws FileNotFoundException
      */
-    public static void main(String args[]) throws FileNotFoundException, IOException {
+    public static void main(String args[]) {
 
         in = new Scanner(System.in);
 
@@ -214,6 +216,9 @@ public class ANN_Client {
                 System.out.print("Please enter the maximum SSE: ");
                 maxSSE = in.nextDouble();
 
+                System.out.print("Please enter the maximum number of epoch: ");
+                maxEpoch = in.nextInt();
+
                 break;
             } catch (Exception e) {
                 System.out.println("Wrong format, please try again!");
@@ -226,7 +231,7 @@ public class ANN_Client {
      * Ask for the configuration file to take in, and call processConfigFile()
      * to process and set the properties and weights.
      */
-    private static void askConfigFile() throws IOException {
+    private static void askConfigFile() {
         do {
             System.out.print(
                     "Please enter the filename of the configuration file: ");
@@ -263,14 +268,7 @@ public class ANN_Client {
         int save = oneOrTwo();
 
         if (save == 1) {
-            do {
-                try {
-                    generateConfigFile(ann);
-                    break;
-                } catch (FileNotFoundException e) {
-                    System.out.println("File not found, try again!");
-                }
-            } while (true);
+            generateConfigFile(ann);
         }
 
     }
@@ -279,7 +277,7 @@ public class ANN_Client {
      * The major function for classify, calls the classify_ANN method and other
      * helper functions.
      */
-    private static void classify() throws FileNotFoundException {
+    private static void classify() {
 
         System.out.print("Please enter the filename of the input data file: ");
 
@@ -287,12 +285,23 @@ public class ANN_Client {
 
         double[][] input2D = processInputFile(fScanner);
 
-        double[][] output2D = ann.Classify_ANN(input2D);
+        double[][] test2D = processTestFile(input2D);
+
+        double[][] output2D = ann.Classify_ANN(test2D);
 
         System.out.print(
                 "Please enter the filename that the output should be saved into (including file extension): ");
         String outputName = in.next();
-        PrintWriter out = new PrintWriter(outputName);
+        PrintWriter out;
+
+        do {
+            try {
+                out = new PrintWriter(outputName);
+                break;
+            } catch (FileNotFoundException ex) {
+                System.out.println("FileNotFoundException");
+            }
+        } while (true);
 
         for (int i = 0; i < output2D.length; i++) {
             for (int j = 0; j < output2D[i].length; j++) {
@@ -344,6 +353,16 @@ public class ANN_Client {
      */
     private static double[][] processInputFile(Scanner fScanner) {
 
+        System.out.println("Does input file contain a header? ");
+        System.out.println("\t1. Yes");
+        System.out.println("\t2. No");
+
+        int header = oneOrTwo();
+
+        if (header == 1) {
+            fScanner.nextLine();
+        }
+
         ArrayList<double[]> inputArray2D = new ArrayList<double[]>();
 
         while (fScanner.hasNextLine()) {
@@ -364,21 +383,78 @@ public class ANN_Client {
         return input2D;
     }
 
+    private static double[][] processTestFile(double[][] input2D) {
+
+        if (input2D[0].length > numIN) {
+            double[][] test2D = new double[input2D.length][];
+            for (int i = 0; i < input2D.length; i++) {
+                test2D[i] = Arrays.copyOfRange(input2D[i], 0, numIN);
+            }
+            return test2D;
+        }
+        else {
+            return input2D;
+        }
+    }
+
     /**
      * Process configuration file and set the properties and weights.
      *
      * @param filename
      * @throws FileNotFoundException
      */
-    private static void processConfigFile(String filename) throws FileNotFoundException, IOException {
+    private static void processConfigFile(String filename) throws FileNotFoundException {
         try {
             FileInputStream f = new FileInputStream(filename);
             ObjectInputStream configIn = new ObjectInputStream(f);
             ann = (ANN) configIn.readObject();
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
         } catch (ClassNotFoundException e) {
             System.out.println("ClassNotFoundException");
+        } catch (IOException e) {
+            System.out.println("IOException");
         }
         /*
+        File f = new File(filename);
+        Scanner configIn = new Scanner(f);
+        String dataStr = configIn.nextLine();
+        String[] dataArray = dataStr.split(",");
+        numIN = Integer.parseInt(dataArray[0]);
+        numOUT = Integer.parseInt(dataArray[1]);
+        numLayer = Integer.parseInt(dataArray[2]);
+        numNeuron = Integer.parseInt(dataArray[3]);
+        maxSSE = Double.parseDouble(dataArray[4]);
+        ann = new ANN(numIN, numOUT, numLayer, numNeuron, maxSSE);
+        for (SUB_ANN subANN : ann.getSubANNList()) {
+        for (HiddenLayer hLayer : subANN.getHiddenLayerList()) {
+        for (Perceptron perceptron : hLayer.getNodes()) {
+        String line = configIn.nextLine();
+        String[] lineArr = line.split(",");
+        ArrayList<Double> weights = new ArrayList<Double>();
+        double theta = Double.parseDouble(lineArr[0]);
+        perceptron.setTheta(theta);
+        for (int i = 1; i < lineArr.length; i++) {
+        Double w = Double.parseDouble(lineArr[i]);
+        weights.add(w);
+        }
+        perceptron.setWeights(weights);
+        }
+        }
+        for (Perceptron perceptron : subANN.getOutputLayer().getNodes()) {
+        String line = configIn.nextLine();
+        String[] lineArr = line.split(",");
+        ArrayList<Double> weights = new ArrayList<Double>();
+        double theta = Double.parseDouble(lineArr[0]);
+        perceptron.setTheta(theta);
+        for (int i = 1; i < lineArr.length; i++) {
+        Double w = Double.parseDouble(lineArr[i]);
+        weights.add(w);
+        }
+        perceptron.setWeights(weights);
+        }
+        }
+
         File f = new File(filename);
         Scanner configIn = new Scanner(f);
 
@@ -439,7 +515,7 @@ public class ANN_Client {
      * @param subANNList
      * @throws FileNotFoundException
      */
-    private static void generateConfigFile(ANN ann) throws FileNotFoundException {
+    private static void generateConfigFile(ANN ann) {
 
         System.out.print("Enter the desired name for the configuration file: ");
         String configFilename = in.next();
@@ -452,8 +528,36 @@ public class ANN_Client {
         } catch (IOException e) {
             System.out.println("IOException");
         }
-
         /*
+        PrintWriter out = new PrintWriter(configFilename);
+        out.printf("%d,%d,%d,%d,%f\n", numIN, numOUT, numLayer, numNeuron,
+        maxSSE);
+        for (SUB_ANN subANN : subANNList) {
+        ArrayList<HiddenLayer> layers = subANN.getHiddenLayerList();
+        for (Layer layer : layers) {
+        ArrayList<Perceptron> perceptrons = layer.getNodes();
+        for (Perceptron perceptron : perceptrons) {
+        ArrayList<Double> weights = perceptron.getWeights();
+        out.printf("%f,", perceptron.getTheta());
+        for (int i = 0; i < weights.size() - 1; i++) {
+        out.printf("%f,", weights.get(i));
+        }
+        out.printf("%f\n", weights.get(weights.size() - 1));
+        }
+        }
+        OutputLayer oLayer = subANN.getOutputLayer();
+        ArrayList<Perceptron> perceptrons = oLayer.getNodes();
+        for (Perceptron perceptron : perceptrons) {
+        ArrayList<Double> weights = perceptron.getWeights();
+        out.printf("%f,", perceptron.getTheta());
+        for (int i = 0; i < weights.size() - 1; i++) {
+        out.printf("%f,", weights.get(i));
+        }
+        out.printf("%f\n", weights.get(weights.size() - 1));
+        }
+        }
+        out.close();
+
         PrintWriter out = new PrintWriter(configFilename);
         out.printf("%d,%d,%d,%d,%f\n", numIN, numOUT, numLayer, numNeuron,
                    maxSSE);
