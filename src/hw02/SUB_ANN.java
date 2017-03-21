@@ -165,8 +165,10 @@ public class SUB_ANN implements java.io.Serializable {
         double error;
         double actualOutput;
         double expectedOutput;
+
         do {
             SSE = 0;
+            this.epoch = 0;
             for (int j = 0; j < row; j++) {
                 error = this.Feed_Forward_Train_SUB_ANN(data[j], no);
                 SSE += Math.pow(error, 2);
@@ -179,7 +181,7 @@ public class SUB_ANN implements java.io.Serializable {
                 this.addToTrainingLog(data[j]);
             }
             this.epoch += 1;
-        } while (SSE >= ANN.minSSE);
+        } while (SSE >= ANN.minSSE || this.epoch > ANN.maxEpoch);
     }
 
     /**

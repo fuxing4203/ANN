@@ -55,6 +55,8 @@ public class ANN implements java.io.Serializable {
      */
     private int numOut;
 
+    public static int maxEpoch;
+
     private StringBuilder trainingLog;
 
     /**
@@ -67,12 +69,13 @@ public class ANN implements java.io.Serializable {
      * @param minSSE
      */
     public ANN(int numInp, int numOut, int numOfLayers,
-               int numNodesInHiddenLayers, double minSSE) {
+               int numNodesInHiddenLayers, double minSSE, int maxEpoch) {
         this.numInp = numInp;
         this.numOut = numOut;
         this.numLayers = numOfLayers;
         this.numNodesInHiddenLayers = this.numNodesInHiddenLayers;
         ANN.minSSE = minSSE;
+        this.maxEpoch = maxEpoch;
         subANNList = new ArrayList<SUB_ANN>();
         for (int i = 0; i < numOut; i++) {
             subANNList.add(new SUB_ANN(numInp, numOfLayers,
