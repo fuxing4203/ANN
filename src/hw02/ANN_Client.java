@@ -18,7 +18,6 @@
  */
 package hw02;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,7 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -66,7 +64,7 @@ public class ANN_Client {
 
         int mode = 0;
 
-        int option = oneOrTwo();
+        int option = inputOptionUtility.oneOrTwo(in);
 
         // Create new ANN
         if (option == 1) {
@@ -129,68 +127,14 @@ public class ANN_Client {
 
         if (!firstRound) {
             System.out.println("\t3. Quit");
-            mode = oneTwoOrThree();
+            mode = inputOptionUtility.oneTwoOrThree(in);
         }
 
         else {
-            mode = oneOrTwo();
+            mode = inputOptionUtility.oneOrTwo(in);
         }
 
         return mode;
-    }
-
-    /**
-     * Test if the input is either 1 or 2, prompt error message and keep asking
-     * until get the correct format input.
-     *
-     * @return int option of either 1 or 2
-     */
-    private static int oneOrTwo() {
-
-        int option;
-
-        do {
-            System.out.print("Enter 1 or 2: ");
-
-            if (in.hasNextInt()) {
-                option = in.nextInt();
-
-                if (option == 1 || option == 2) {
-                    break;
-                }
-            }
-            System.out.println("Invalid input, please try again!");
-
-        } while (true);
-
-        return option;
-    }
-
-    /**
-     * Test if the input is either 1, 2, or 3, prompt error message and keep
-     * asking until get the correct format input.
-     *
-     * @return int option of 1, 2, or 3
-     */
-    private static int oneTwoOrThree() {
-
-        int option;
-
-        do {
-            System.out.print("Enter 1, 2, or 3: ");
-
-            if (in.hasNextInt()) {
-                option = in.nextInt();
-
-                if (option == 1 || option == 2 || option == 3) {
-                    break;
-                }
-            }
-            System.out.println("Invalid input, please try again!");
-
-        } while (true);
-
-        return option;
     }
 
     /**
@@ -219,7 +163,7 @@ public class ANN_Client {
                         "Please choose between the following activation functions: ");
                 System.out.println("\t1. Sigmoidal activation function");
                 System.out.println("\t2. Soft sign activation function");
-                activation = oneOrTwo();
+                activation = inputOptionUtility.oneOrTwo(in);
 
                 System.out.print("Please enter the maximum SSE: ");
                 maxSSE = in.nextDouble();
@@ -250,6 +194,10 @@ public class ANN_Client {
                 break;
             } catch (FileNotFoundException e) {
                 System.out.println("File not found, try again!");
+            } catch (IOException ex) {
+                System.out.println("IOException, try another file!");
+            } catch (ClassNotFoundException ex) {
+                System.out.println("ClassNotFoundException, try another file!");
             }
         } while (true);
     }
@@ -262,9 +210,9 @@ public class ANN_Client {
 
         System.out.print("Please enter the filename of the training data file: ");
 
-        Scanner fScanner = readInputFile();
+        Scanner fScanner = dataFileUtility.readInputFile(in);
 
-        double[][] input2D = processInputFile(fScanner);
+        double[][] input2D = dataFileUtility.processInputFile(in, fScanner);
 
         ArrayList<SUB_ANN> subANNList = ann.Train_ANN(input2D);
 
@@ -273,7 +221,7 @@ public class ANN_Client {
         System.out.println("1. yes");
         System.out.println("2. no");
 
-        int save = oneOrTwo();
+        int save = inputOptionUtility.oneOrTwo(in);
 
         if (save == 1) {
             generateConfigFile(ann);
@@ -289,20 +237,23 @@ public class ANN_Client {
 
         System.out.print("Please enter the filename of the input data file: ");
 
-        Scanner fScanner = readInputFile();
+        Scanner fScanner = dataFileUtility.readInputFile(in);
 
-        double[][] input2D = processInputFile(fScanner);
+        double[][] input2D = dataFileUtility.processInputFile(in, fScanner);
 
-        double[][] test2D = processTestFile(input2D);
+        double[][] test2D = dataFileUtility.processTestFile(ann.getNumInp(),
+                                                            input2D);
 
         double[][] output2D = ann.Classify_ANN(test2D);
 
-        System.out.print(
-                "Please enter the filename that the output should be saved into (including file extension): ");
-        String outputName = in.next();
         PrintWriter out;
 
         do {
+
+            System.out.print(
+                    "Please enter the filename that the output should be saved into (including file extension): ");
+            String outputName = in.next();
+
             try {
                 out = new PrintWriter(outputName);
                 break;
@@ -327,102 +278,17 @@ public class ANN_Client {
     }
 
     /**
-     * Read input file and handles exceptions.
-     *
-     * @return Scanner Scanner from the input file.
-     */
-    private static Scanner readInputFile() {
-
-        String filename;
-        Scanner fScanner;
-
-        do {
-            filename = in.next();
-
-            try {
-                File f = new File(filename);
-                fScanner = new Scanner(f);
-                break;
-
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found, please try again!");
-                System.out.print("Filename: ");
-            }
-        } while (true);
-
-        return fScanner;
-    }
-
-    /**
-     * Process input file, and store the information in a 2D array.
-     *
-     * @param fScanner
-     * @return double[][] 2D array containing the input data
-     */
-    private static double[][] processInputFile(Scanner fScanner) {
-
-        System.out.println("Does input file contain a header? ");
-        System.out.println("\t1. Yes");
-        System.out.println("\t2. No");
-
-        int header = oneOrTwo();
-
-        if (header == 1) {
-            fScanner.nextLine();
-        }
-
-        ArrayList<double[]> inputArray2D = new ArrayList<double[]>();
-
-        while (fScanner.hasNextLine()) {
-            String line = fScanner.nextLine();
-            String[] parts = line.split(",");
-            double[] ints = new double[parts.length];
-            for (int i = 0; i < parts.length; i++) {
-                ints[i] = Double.parseDouble(parts[i]);
-            }
-            inputArray2D.add(ints);
-        }
-
-        double[][] input2D = new double[inputArray2D.size()][];
-
-        for (int i = 0; i < inputArray2D.size(); i++) {
-            input2D[i] = inputArray2D.get(i);
-        }
-        return input2D;
-    }
-
-    private static double[][] processTestFile(double[][] input2D) {
-
-        if (input2D[0].length > numIN) {
-            double[][] test2D = new double[input2D.length][];
-            for (int i = 0; i < input2D.length; i++) {
-                test2D[i] = Arrays.copyOfRange(input2D[i], 0, numIN);
-            }
-            return test2D;
-        }
-        else {
-            return input2D;
-        }
-    }
-
-    /**
      * Process configuration file and set the properties and weights.
      *
      * @param filename
      * @throws FileNotFoundException
      */
-    private static void processConfigFile(String filename) throws FileNotFoundException {
-        try {
-            FileInputStream f = new FileInputStream(filename);
-            ObjectInputStream configIn = new ObjectInputStream(f);
-            ann = (ANN) configIn.readObject();
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException();
-        } catch (ClassNotFoundException e) {
-            System.out.println("ClassNotFoundException");
-        } catch (IOException e) {
-            System.out.println("IOException");
-        }
+    private static void processConfigFile(String filename) throws FileNotFoundException, IOException, ClassNotFoundException {
+
+        FileInputStream f = new FileInputStream(filename);
+        ObjectInputStream configIn = new ObjectInputStream(f);
+        ann = (ANN) configIn.readObject();
+
         /*
         File f = new File(filename);
         Scanner configIn = new Scanner(f);
@@ -525,17 +391,26 @@ public class ANN_Client {
      */
     private static void generateConfigFile(ANN ann) {
 
-        System.out.print("Enter the desired name for the configuration file: ");
-        String configFilename = in.next();
+        do {
+            System.out.print(
+                    "Enter the desired name for the configuration file: ");
 
-        try {
-            FileOutputStream f = new FileOutputStream(configFilename);
-            ObjectOutputStream configOut = new ObjectOutputStream(f);
+            String configFilename = in.next();
 
-            configOut.writeObject(ann);
-        } catch (IOException e) {
-            System.out.println("IOException");
-        }
+            try {
+                FileOutputStream f = new FileOutputStream(configFilename);
+                ObjectOutputStream configOut = new ObjectOutputStream(f);
+                configOut.writeObject(ann);
+                break;
+
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found, please try again!");
+            } catch (IOException e) {
+                System.out.println("IOException, try another file!");
+            }
+
+        } while (true);
+
         /*
         PrintWriter out = new PrintWriter(configFilename);
         out.printf("%d,%d,%d,%d,%f\n", numIN, numOUT, numLayer, numNeuron,
