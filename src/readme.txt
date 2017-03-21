@@ -1,4 +1,4 @@
-Names: Haoyu Xiong, Jingya Wu
+Names: Haoyu Xiong, Jingya Wu, Iris Fu
 
 Primary resources:
     1. Java Standard Edition 8 API
@@ -23,3 +23,6 @@ Format of configuration file:
              | 4 |      | 7 |
               ---        ---
     input         hidden         output
+
+Format of Trainging Log:
+    Training Log will print out the weights for each inputs, with each line for a single node. Epoch number will not increase until all lines have been run. The program will print out the weights for the first output first, and then for the second output and so on.
