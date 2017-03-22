@@ -1,7 +1,7 @@
 /* *****************************************
   * CSCI205 - Software Engineering and Design
   * Spring 2017 *
-  * Name: NAMES of team members
+  * Name: Haoyu Xiong Jingya Wu and Iris Fu
   * Date: Mar 6, 2017
   * Time: 12:48:20 AM *
   * Project: csci205_hw
