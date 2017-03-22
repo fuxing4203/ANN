@@ -268,8 +268,8 @@ public class ANN_Client {
                     System.out.print(", ");
                     out.print(", ");
                 }
-                System.out.printf("%.2f", output2D[i][j]);
-                out.printf("%.2f", output2D[i][j]);
+                System.out.printf("%d", Math.round(output2D[i][j]));
+                out.printf("%d", Math.round(output2D[i][j]));
             }
             System.out.println();
             out.println();
