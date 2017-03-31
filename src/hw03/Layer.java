@@ -39,7 +39,6 @@ public class Layer implements java.io.Serializable {
         this.Nodes = new ArrayList<Perceptron>();
         for (int i = 0; i < numOfNodes; i++) {
             this.Nodes.add(new Perceptron(numOfPrevNodes));
-
         }
         fNets = new double[numOfNodes];
 

@@ -61,6 +61,10 @@ public class ANN implements java.io.Serializable {
 
     public static int actFuncNum;
 
+    private static double mu;
+
+    private static double alpha;
+
     /**
      * Constructor for ANN
      *
@@ -72,7 +76,7 @@ public class ANN implements java.io.Serializable {
      */
     public ANN(int numInp, int numOut, int numOfLayers,
                int numNodesInHiddenLayers, double minSSE, int maxEpoch,
-               int actFuncNum) throws FileNotFoundException {
+               int actFuncNum, int alpha, int mu) throws FileNotFoundException {
         this.numInp = numInp;
         this.numOut = numOut;
         ANN.actFuncNum = actFuncNum;
@@ -80,6 +84,8 @@ public class ANN implements java.io.Serializable {
         this.numNodesInHiddenLayers = this.numNodesInHiddenLayers;
         ANN.minSSE = minSSE;
         this.maxEpoch = maxEpoch;
+        this.alpha = alpha;
+        this.mu = mu;
         subANNList = new ArrayList<SUB_ANN>();
         for (int i = 0; i < numOut; i++) {
             subANNList.add(new SUB_ANN(numInp, numOfLayers,
