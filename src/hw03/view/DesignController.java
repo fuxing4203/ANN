@@ -21,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
@@ -69,6 +70,14 @@ public class DesignController implements Initializable {
     private Button pauseBtn;
     @FXML
     private Button saveBtn;
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private Button fileUploadBtn;
+    @FXML
+    private Button applyConfigBtn;
+    @FXML
+    private Button applyMomentumBtn;
 
     /**
      * Initializes the controller class.
