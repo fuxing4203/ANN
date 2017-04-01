@@ -10,7 +10,7 @@
  *
  * ****************************************
  */
-package neuralnet;
+package hw03.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +20,7 @@ import java.util.Arrays;
  * @author brk009
  */
 public class Edges {
+
     private Layer inLayer;
     private Layer outLayer;
     private Edge[][] edges;
@@ -127,7 +128,7 @@ public class Edges {
                 // of the outgoing edges of neuron j.
                 for (int k = 0; k < downEdges.getOutLayer().getNumNeurons(); k++) {
                     double term = downEdges.getOutSensitivy()[k] * downEdges.getWeightOf(
-                      k, j);
+                            k, j);
                     error += term;
                 }
             }
@@ -139,8 +140,8 @@ public class Edges {
             // Compute delta weight values
             for (int i = 0; i < inLayer.getNumNeurons(); i++) {
                 edges[j][i].updateDeltaWeight(
-                  -ANN.learningRate * sensitivity * inLayer.getOutputValueOf(
-                    i));
+                        -ANN.learningRate * sensitivity * inLayer.getOutputValueOf(
+                                i));
 //                edges[j][i].updateDeltaWeight(
 //                        sensitivity * inLayer.getOutputValueOf(i));
 //                edges[j][i].setDeltaWeight(

@@ -10,7 +10,7 @@
  *
  * ****************************************
  */
-package neuralnet.data;
+package hw03.model.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +26,7 @@ import java.util.Scanner;
  * @author brk009
  */
 public class LabeledInstances extends ArrayList<LabeledInstance> {
+
     public LabeledInstances() {
 
     }

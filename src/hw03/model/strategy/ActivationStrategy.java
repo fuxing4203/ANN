@@ -9,7 +9,7 @@
  *
  * ****************************************
  */
-package neuralnet.strategy;
+package hw03.model.strategy;
 
 /**
  * Interface representing an activation function as a strategy design pattern.
@@ -19,6 +19,7 @@ package neuralnet.strategy;
  * @author brk009
  */
 public interface ActivationStrategy {
+
     public double f(double x);
 
     public double fDeriv(double x);

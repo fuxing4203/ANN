@@ -8,9 +8,10 @@
  * File: LogisticActivationStrategy
  *
  * ****************************************
- */package neuralnet.strategy;
+ */package hw03.model.strategy;
 
 public class LogisticActivationStrategy implements ActivationStrategy {
+
     @Override
     public double f(double x) {
         return 1.0f / (1.0f + Math.exp(-x));

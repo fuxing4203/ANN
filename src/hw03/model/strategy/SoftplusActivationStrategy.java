@@ -13,9 +13,10 @@
  *
  * ****************************************
  */
-package neuralnet.strategy;
+package hw03.model.strategy;
 
 public class SoftplusActivationStrategy implements ActivationStrategy {
+
     @Override
     public double f(double x) {
         return Math.log(1 + Math.exp(x));

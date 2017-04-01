@@ -10,9 +10,9 @@
  *
  * ****************************************
  */
-package neuralnet;
+package hw03.model;
 
-import neuralnet.data.UnlabeledInstance;
+import hw03.model.data.UnlabeledInstance;
 
 /**
  * An InputLayer is a layer of Neurons, hoewever, the output of these neurons is

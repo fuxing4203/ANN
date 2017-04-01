@@ -10,13 +10,14 @@
  *
  * ****************************************
  */
-package neuralnet;
+package hw03.model;
 
 /**
  *
  * @author brk009
  */
 public class Neuron {
+
     private double netInput;
     private double output;
 

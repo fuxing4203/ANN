@@ -10,7 +10,7 @@
  *
  * ****************************************
  */
-package neuralnet.data;
+package hw03.model.data;
 
 import java.util.ArrayList;
 

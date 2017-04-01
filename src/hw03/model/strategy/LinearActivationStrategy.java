@@ -8,9 +8,10 @@
  * File: LinearActivationStrategy
  *
  * ****************************************
- */package neuralnet.strategy;
+ */package hw03.model.strategy;
 
 public class LinearActivationStrategy implements ActivationStrategy {
+
     @Override
     public double f(double x) {
         return x;

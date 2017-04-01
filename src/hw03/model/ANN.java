@@ -12,15 +12,15 @@
  */
 package hw03.model;
 
+import hw03.model.data.LabeledInstance;
+import hw03.model.data.LabeledInstances;
+import hw03.model.data.UnlabeledInstance;
+import hw03.model.data.UnlabeledInstances;
+import hw03.model.strategy.ActivationStrategy;
+import hw03.model.strategy.LogisticActivationStrategy;
+import hw03.model.strategy.SoftplusActivationStrategy;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import neuralnet.data.LabeledInstance;
-import neuralnet.data.LabeledInstances;
-import neuralnet.data.UnlabeledInstance;
-import neuralnet.data.UnlabeledInstances;
-import neuralnet.strategy.ActivationStrategy;
-import neuralnet.strategy.LogisticActivationStrategy;
-import neuralnet.strategy.SoftplusActivationStrategy;
 
 /**
  * ANN - This is the primary class that encapsulates an entire ANN
@@ -37,8 +37,8 @@ public class ANN {
     private Layer[] layers;
     private Edges[] edgeConnections;
 
-    public double learningRate;
-    public double momentum;
+    public static double learningRate;
+    public static double momentum;
     public static int maxEpochs;
     public static double errStopThresh;
     public double currSSE;
@@ -47,7 +47,7 @@ public class ANN {
      * Uncomment which activation strategy you want - keep in mind that they all
      * affect the selection of learningRate and momentum
      */
-    public ActivationStrategy activation;
+    public static ActivationStrategy activation;
 //    public static ActivationStrategy activation = new LogisticActivationStrategy();
 //    public static ActivationStrategy activation = new LinearActivationStrategy();
 //    public static ActivationStrategy activation = new SoftplusActivationStrategy();  // needs much smaller learningRate

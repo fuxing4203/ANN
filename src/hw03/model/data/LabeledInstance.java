@@ -10,7 +10,7 @@
  *
  * ****************************************
  */
-package neuralnet.data;
+package hw03.model.data;
 
 import java.util.ArrayList;
 
@@ -21,6 +21,7 @@ import java.util.ArrayList;
  * @author brk009
  */
 public class LabeledInstance extends UnlabeledInstance {
+
     private ArrayList<Double> target = null;
 
     /**

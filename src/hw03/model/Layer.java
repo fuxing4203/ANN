@@ -10,7 +10,7 @@
  *
  * ****************************************
  */
-package neuralnet;
+package hw03.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;

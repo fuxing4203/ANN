@@ -8,9 +8,10 @@
  * File: ReLUActivationStrategy
  *
  * ****************************************
- */package neuralnet.strategy;
+ */package hw03.model.strategy;
 
 public class ReLUActivationStrategy implements ActivationStrategy {
+
     @Override
     public double f(double x) {
         return Math.max(0.0f, x);
