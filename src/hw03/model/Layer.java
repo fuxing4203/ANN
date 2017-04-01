@@ -1,167 +1,118 @@
 /* *****************************************
-  * CSCI205 - Software Engineering and Design
-  * Spring 2017 *
-  * Name: Haoyu Xiong Jingya Wu and Iris Fu
-  * Date: Mar 6, 2017
-  * Time: 12:48:20 AM *
-  * Project: csci205_hw
-  * Package: hw01
-  * File: Layer
-  * Description:
-  *
-  * ****************************************
+ * CSCI205 - Software Engineering and Design
+ * Fall 2016
+ *
+ * Name: Prof. King
+ * Project: NeuralNet
+ * Package: neuralnet
+ * File: Layer
+ * Description:
+ *
+ * ****************************************
  */
-package hw03.model;
+package neuralnet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
- * @author haoyuxiong
+ * @author brk009
  */
-public class Layer implements java.io.Serializable {
+public class Layer {
 
-    private int numOfPrevNodes;
-    private int numOfNodes;
-    private ArrayList<Perceptron> Nodes;
-    private double minSSE;
-    private double[] fNets;
+    private int numNeurons;
+    private Neuron[] neurons;
+    private Edges inputFromEdges;
+    private Edges outputToEdges;
 
-    /**
-     * The constructor for the Layer class
-     *
-     * @param numOfPrevNodes
-     * @param numOfNodes
-     */
-    public Layer(int numOfPrevNodes, int numOfNodes) {
-        this.numOfNodes = numOfNodes;
-        this.numOfPrevNodes = numOfPrevNodes;
-        this.Nodes = new ArrayList<Perceptron>();
-        for (int i = 0; i < numOfNodes; i++) {
-            this.Nodes.add(new Perceptron(numOfPrevNodes));
+    public Layer(int numNeurons) {
+        this.numNeurons = numNeurons;
+        neurons = new Neuron[numNeurons];
+        for (int i = 0; i < numNeurons; i++) {
+            neurons[i] = new Neuron();
         }
-        fNets = new double[numOfNodes];
-
+        inputFromEdges = null;
+        outputToEdges = null;
     }
 
-    /**
-     *
-     * @return double[] this returns the set of f(net) after classification
-     */
-    public double[] getfNets() {
-        return fNets;
+    public Neuron[] getNeurons() {
+        return this.neurons;
     }
 
-    /**
-     *
-     * @param index
-     * @return double this returns the calculated f(net) at inputted index after
-     * classification
-     */
-    public double getFnetsAtNoNode(int index) {
-        return this.fNets[index];
+    public int getNumNeurons() {
+        return numNeurons;
     }
 
-    /**
-     *
-     * @param fNets
-     */
-    public void setfNets(double[] fNets) {
-        this.fNets = fNets;
+    public Neuron getNeuron(int i) {
+        return neurons[i];
     }
 
-    /**
-     *
-     * @return int this returns the number of previous node as defined by inputs
-     */
-    public int getNumOfPrevNodes() {
-        return numOfPrevNodes;
+    public double getInputValueOf(int i) {
+        return neurons[i].getNetInput();
     }
 
-    /**
-     *
-     * @param numOfPrevNodes
-     */
-    public void setNumOfPrevNodes(int numOfPrevNodes) {
-        this.numOfPrevNodes = numOfPrevNodes;
+    public double getOutputValueOf(int i) {
+        return neurons[i].getActivatedOutput();
     }
 
-    /**
-     *
-     * @return int this returns the number of Nodes
-     */
-    public int getNumOfNodes() {
-        return numOfNodes;
-    }
-
-    /**
-     *
-     * @param numOfNodes
-     */
-    public void setNumOfNodes(int numOfNodes) {
-        this.numOfNodes = numOfNodes;
-    }
-
-    /**
-     *
-     * @return ArrayList returns the nodes
-     */
-    public ArrayList<Perceptron> getNodes() {
-        return Nodes;
-    }
-
-    /**
-     *
-     * @param Nodes
-     */
-    public void setNodes(ArrayList<Perceptron> Nodes) {
-        this.Nodes = Nodes;
-    }
-
-    /**
-     * Get the node at the inputted index
-     *
-     * @param index
-     * @return Perceptron this returns the perceptron at the indicated index
-     */
-    public Perceptron getNodeAtNo(int index) {
-        return this.getNodes().get(index);
-
-    }
-
-    /**
-     *
-     * @return double the minimum SSE that the user inputted in.
-     */
-    public double getMinSSE() {
-        return minSSE;
-    }
-
-    /**
-     *
-     * @param minSSE
-     */
-    public void setMinSSE(double minSSE) {
-        this.minSSE = minSSE;
-    }
-
-    /**
-     * classify the layer and get the sets of results for each of the nodes
-     *
-     * @param data
-     * @return double[] returns the f(net) after the classification
-     */
-    public double[] classify_Layer(double[] data
-    ) {
-        double fgets;
-
-        for (int i = 0; i < this.numOfNodes; i++) {
-            fgets = this.Nodes.get(i).classify_Perceptron(data);
-            this.fNets[i] = fgets;
-            //System.out.printf("fgets, %f\n", fgets);
+    public ArrayList<Double> getInputValues() {
+        ArrayList<Double> list = new ArrayList<Double>();
+        for (int i = 0; i < numNeurons; i++) {
+            list.add(neurons[i].getNetInput());
         }
-        return this.getfNets();
+        return list;
+    }
 
+    public ArrayList<Double> getOutputValues() {
+        ArrayList<Double> list = new ArrayList<Double>();
+        for (int i = 0; i < numNeurons; i++) {
+            list.add(neurons[i].getActivatedOutput());
+        }
+        return list;
+    }
+
+    /**
+     * Set up the reference to the edges that this layer is sitting between. If
+     * this is an InputLayer, then inputFromEdges is null. If this is an
+     * OutputLayer then outputToEdges is null
+     *
+     * @param inputFromEdges
+     * @param outputToEdges
+     */
+    void setEdges(Edges inputFromEdges, Edges outputToEdges) {
+        this.inputFromEdges = inputFromEdges;
+        this.outputToEdges = outputToEdges;
+    }
+
+    void setInputFromEdges(Edges inputFromEdges) {
+        this.inputFromEdges = inputFromEdges;
+    }
+
+    void setOutputToEdges(Edges outputToEdges) {
+        this.outputToEdges = outputToEdges;
+    }
+
+    public Edges getInputFromEdges() {
+        return this.inputFromEdges;
+    }
+
+    public Edges getOutputToEdges() {
+        return this.outputToEdges;
+    }
+
+    public boolean isInputLayer() {
+        return this.inputFromEdges == null;
+    }
+
+    public boolean isOutputLayer() {
+        return this.outputToEdges == null;
+    }
+
+    @Override
+    public String toString() {
+        return "Layer{" + "numNeurons=" + numNeurons + ", neurons=" + Arrays.toString(
+                neurons) + '}';
     }
 
 }
