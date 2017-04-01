@@ -24,7 +24,6 @@ public class Perceptron implements java.io.Serializable {
 
     private ArrayList<Double> weights;
     private double theta;
-    final static double alpha = 0.2;
     private int numInp;
 
     /**
@@ -32,7 +31,6 @@ public class Perceptron implements java.io.Serializable {
      */
     public static SigmoidalActivationFunction sig = new SigmoidalActivationFunction();
     public static SoftSignActivationFunction soft = new SoftSignActivationFunction();
-    private static double mu = 0.5;
     private ArrayList<Double> prevWeight;
 
     /**
@@ -42,7 +40,6 @@ public class Perceptron implements java.io.Serializable {
      */
     public Perceptron(int numInp) {
         this.numInp = numInp;
-
         this.weights = new ArrayList<Double>();
         this.prevWeight = new ArrayList<Double>();
         Random randomDoubleGenerator = new Random();
@@ -97,7 +94,7 @@ public class Perceptron implements java.io.Serializable {
     public void train_Perceptron(double[] fgets, double littleDelta) {
         double changeOfWeight;
 
-        double changeOfTheta = alpha * (-1) * littleDelta;
+        double changeOfTheta = ANN.alpha * (-1) * littleDelta;
         this.theta += changeOfTheta;
 
         //System.out.printf("theta,%f, change, %f\n", this.theta, changeOfTheta);
@@ -142,7 +139,7 @@ public class Perceptron implements java.io.Serializable {
                                               double littleDelta,
                                               double prevDeltaWeight) {
         //System.out.printf("delta,%f\n", littleDelta);
-        return Perceptron.alpha * prevFnet * littleDelta + prevDeltaWeight * Perceptron.mu;
+        return ANN.alpha * prevFnet * littleDelta + prevDeltaWeight * ANN.mu;
     }
 
     /**

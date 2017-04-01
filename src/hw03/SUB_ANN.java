@@ -164,7 +164,6 @@ public class SUB_ANN implements java.io.Serializable {
         double error;
         double actualOutput;
         double expectedOutput;
-        this.epoch = 0;
         long t0 = System.nanoTime();
         do {
             SSE = 0;
