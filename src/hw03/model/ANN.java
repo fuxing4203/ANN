@@ -11,7 +11,7 @@
   *
   * ****************************************
  */
-package hw03;
+package hw03.model;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

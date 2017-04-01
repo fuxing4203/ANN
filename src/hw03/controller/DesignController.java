@@ -11,7 +11,7 @@
   *
   * ****************************************
  */
-package hw03.view;
+package hw03.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,6 +32,7 @@ import javafx.scene.layout.Pane;
  */
 public class DesignController implements Initializable {
 
+    private hw03.model.ANN theModel;
     @FXML
     private Button learnBtn;
     @FXML
@@ -85,6 +86,19 @@ public class DesignController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+    }
+
+    @FXML
+    void generateGraph(ActionEvent event) {
+        theTask = new ANNTask(theModel);
+        this.theModel.getSubANNList().get(0).getHiddenLayerList();
+        Thread th = new Thread(theTask);
+        th.setDaemon(true);
+        th.start();
+    }
+
+    public void setModel(ANN theModel) {
+        this.theModel = theModel;
     }
 
 }

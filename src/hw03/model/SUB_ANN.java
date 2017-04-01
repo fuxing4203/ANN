@@ -11,7 +11,7 @@
   *
   * ****************************************
  */
-package hw03;
+package hw03.model;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
