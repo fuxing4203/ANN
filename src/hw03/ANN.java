@@ -61,9 +61,9 @@ public class ANN implements java.io.Serializable {
 
     public static int actFuncNum;
 
-    private static double mu;
+    public static double mu;
 
-    private static double alpha;
+    public static double alpha;
 
     /**
      * Constructor for ANN
