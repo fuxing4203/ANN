@@ -43,6 +43,22 @@ public class ANN {
     public static double errStopThresh;
     public double currSSE;
 
+    public int getNumInputs() {
+        return numInputs;
+    }
+
+    public int getNumHidden() {
+        return numHidden;
+    }
+
+    public int getNumOutputs() {
+        return numOutputs;
+    }
+
+    public Edges[] getEdgeConnections() {
+        return edgeConnections;
+    }
+
     /**
      * Uncomment which activation strategy you want - keep in mind that they all
      * affect the selection of learningRate and momentum

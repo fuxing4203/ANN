@@ -27,6 +27,10 @@ public class Edges {
     private BiasEdge[] thetaEdges;
     private double[] outSensitivity;
 
+    public Edge[][] getEdges() {
+        return edges;
+    }
+
     public Edges(Layer inLayer, Layer outLayer) {
 
         this.inLayer = inLayer;

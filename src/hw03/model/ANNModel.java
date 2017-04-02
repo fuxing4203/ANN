@@ -44,4 +44,7 @@ public class ANNModel {
 
     }
 
+    public ANN getANN() {
+        return ann;
+    }
 }
