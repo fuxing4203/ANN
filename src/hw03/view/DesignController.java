@@ -101,23 +101,23 @@ public class DesignController {
     @FXML
     private TextField fileNameBox;
 
-    private ArrayList<Circle> inputLayerNodes;
-    private ArrayList<Circle> hiddenLayerNodes;
-    private ArrayList<Circle> outputLayerNodes;
+    private ArrayList<Circle> inputLayerNodes = new ArrayList<Circle>();
+    private ArrayList<Circle> hiddenLayerNodes = new ArrayList<Circle>();
+    private ArrayList<Circle> outputLayerNodes = new ArrayList<Circle>();
     private VBox inputLayer;
     private VBox hiddenLayer;
     private VBox outputLayer;
-    private ArrayList<ArrayList<Label>> inputWeights;
-    private ArrayList<ArrayList<Label>> outputWeights;
+    private ArrayList<ArrayList<Label>> inputWeights = new ArrayList<ArrayList<Label>>();
+    private ArrayList<ArrayList<Label>> outputWeights = new ArrayList<ArrayList<Label>>();
     private Dialog dialog;
     private LabeledInstances data;
-    private ArrayList<ArrayList<Double>> resultList;
+    private ArrayList<ArrayList<Double>> resultList = new ArrayList<ArrayList<Double>>();
     private SimpleBooleanProperty ifPause;
 
     @FXML
     void initialize() {
         theTask = null;
-        theModel.getSigmoidalChosen().bind(actFuncRadio1.selectedProperty());
+        //theModel.getSigmoidalChosen().bind(actFuncRadio1.selectedProperty());
 
     }
 
@@ -135,17 +135,19 @@ public class DesignController {
                                                 Integer.parseInt(
                                                         this.maxEpoch.getText()),
 
-                                                Integer.parseInt(
+                                                Double.parseDouble(
                                                         this.alpha.getText()),
-                                                Integer.parseInt(
-                                                        this.momentum.getText()));
+                                                Double.parseDouble(
+                                                        this.momentum.getText()),
+                                                this.actFuncRadio1.selectedProperty());
+
         } catch (NumberFormatException numberFormatException) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Incorrect input!");
             alert.setHeaderText("Incorrect input specified!");
             alert.show();
         }
-
+        generateGraph();
     }
 
     @FXML
@@ -167,6 +169,19 @@ public class DesignController {
 
         }
 
+    }
+
+    @FXML
+    void applyMomentumBtn(ActionEvent event) {
+        if (!ifPause.get()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Learning in progress!");
+            alert.setHeaderText("Pause before applying the changes!");
+            alert.show();
+        }
+        else {
+
+        }
     }
 
     @FXML
@@ -229,8 +244,8 @@ public class DesignController {
 
     }
 
-    @FXML
-    void generateGraph(ActionEvent event) {
+    //@FXML
+    void generateGraph() {
 
         NumberBinding radBinding = canvasPane.heightProperty().divide(
                 Math.max(
@@ -282,7 +297,7 @@ public class DesignController {
                 weight.getTransforms().add(new Translate(line.getStartX(),
                                                          line.getStartY()));
                 weight.setText(String.format(".4f",
-                                             theModel.getANN().getEdgeConnections()[0].getEdges()[i][j]));
+                                             theModel.getANN().getEdgeConnections()[0].getEdges()[j][i]));
                 labelOfWeights.add(weight);
                 canvasPane.getChildren().add(weight);
             }
@@ -295,7 +310,7 @@ public class DesignController {
             for (int j = 0; j < outputLayerNodes.size(); j++) {
                 Line line = new Line();
                 line.setStrokeWidth(3);
-                updateLinePosition(line, inputLayerNodes.get(i),
+                updateLinePosition(line, hiddenLayerNodes.get(i),
                                    outputLayerNodes.get(j));
                 canvasPane.getChildren().add(line);
 
@@ -304,16 +319,15 @@ public class DesignController {
                 weight.getTransforms().add(new Translate(line.getStartX(),
                                                          line.getStartY()));
                 weight.setText(String.format(".4f",
-                                             theModel.getANN().getEdgeConnections()[1].getEdges()[i][j]));
+                                             theModel.getANN().getEdgeConnections()[1].getEdges()[j][i]));
                 labelOfWeights.add(weight);
                 canvasPane.getChildren().add(weight);
             }
             outputWeights.add(labelOfWeights);
         }
 
-        currentEpoch.textProperty().bind(theTask.messageProperty());
-        currentSSE.textProperty().bind(theTask.valueProperty().asString("%.5f"));
-
+        //currentEpoch.textProperty().bind(theTask.messageProperty());
+        //currentSSE.textProperty().bind(theTask.valueProperty().asString("%.5f"));
     }
 
     public double calcDegree(Line line) {
@@ -330,6 +344,9 @@ public class DesignController {
     }
 
     public void updateData() {
+        currentEpoch.setText(theTask.messageProperty().get());
+        currentSSE.setText(String.format("%.5f", theTask.valueProperty().get()));
+
         for (int i = 0; i < inputLayerNodes.size(); i++) {
             for (int j = 0; j < hiddenLayerNodes.size(); j++) {
                 inputWeights.get(i).get(j).setText(String.format(".4f",
@@ -380,22 +397,22 @@ public class DesignController {
         @Override
         protected Double call() throws Exception {
 
-            double totalError = Double.NaN;
+            Double totalError = 0.0;
             ArrayList<ArrayList<Double>> output = theModel.getANN().classifyInstances(
                     data);
-            int epoch;
+            int epoch = 0;
             for (epoch = 0; epoch < this.theModel.getANN().maxEpochs; epoch++) {
                 if (isCancelled()) {
                     // change button
                     break;
                 }
-                totalError = theModel.getANN().learn(data, true, 1);
+                //totalError = theModel.getANN().learn(data, true, 1);
                 if (epoch % 1000 == 0) {
                     output = theModel.getANN().classifyInstances(data);
-                    double error = theModel.getANN().computeOutputError(data,
-                                                                        output);
+                    totalError = theModel.getANN().computeOutputError(data,
+                                                                      output);
 
-                    if (error <= theModel.getANN().errStopThresh) {
+                    if (totalError <= theModel.getANN().errStopThresh) {
                         System.out.println("SUCCESS!");
                         break;
                     }

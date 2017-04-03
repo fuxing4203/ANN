@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.BooleanProperty;
 
 /**
  *
@@ -25,17 +25,9 @@ import javafx.beans.property.SimpleBooleanProperty;
  */
 public class ANNModel {
 
-    private SimpleBooleanProperty sigmoidalChosen;
-    private SimpleBooleanProperty softSignChosen;
+    private BooleanProperty sigmoidalChosen;
+
     private ANN ann;
-
-    public SimpleBooleanProperty getSigmoidalChosen() {
-        return sigmoidalChosen;
-    }
-
-    public SimpleBooleanProperty getSoftSignChosen() {
-        return softSignChosen;
-    }
 
     public ANN getAnn() {
         return ann;
@@ -52,9 +44,11 @@ public class ANNModel {
     public void takeInAttributeCreate(int numInp, int numOut,
                                       int numNodesInHiddenLayers, double minSSE,
                                       int maxEpoch,
-                                      int alpha, int mu) {
+                                      double alpha, double mu,
+                                      BooleanProperty sigmoidal) {
+        sigmoidalChosen = sigmoidal;
         this.ann = new ANN(numInp, numOut, numNodesInHiddenLayers, minSSE,
-                           maxEpoch, sigmoidalChosen.get(), alpha, mu);
+                           maxEpoch, sigmoidal.get(), alpha, mu);
     }
 
     public ANN getANN() {
