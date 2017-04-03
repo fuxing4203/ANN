@@ -11,10 +11,9 @@
   *
   * ****************************************
  */
-package hw03.controller;
+package hw03.view;
 
 import hw03.model.ANNModel;
-import hw03.model.data.LabeledInstance;
 import hw03.model.data.LabeledInstances;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,7 +25,6 @@ import javafx.beans.binding.NumberBinding;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -49,7 +47,7 @@ import javafx.scene.transform.Translate;
  *
  * @author Jingya
  */
-public class DesignController implements Initializable {
+public class DesignController {
 
     private ANNModel theModel;
     private ANNTask theTask;
@@ -115,9 +113,8 @@ public class DesignController implements Initializable {
     private ArrayList<ArrayList<Double>> resultList;
 
     @FXML
-    public void initialize(/*URL url, ResourceBundle rb*/) {
-        this.theModel = null;
-
+    void initialize() {
+        theTask = null;
     }
 
     @FXML
@@ -310,6 +307,9 @@ public class DesignController implements Initializable {
             outputWeights.add(labelOfWeights);
         }
 
+        currentEpoch.textProperty().bind(theTask.messageProperty());
+        currentSSE.textProperty().bind(theTask.valueProperty().asString("%.5f"));
+
     }
 
     public double calcDegree(Line line) {
@@ -363,91 +363,55 @@ public class DesignController implements Initializable {
         this.theModel = theModel;
     }
 
-    class ANNTask extends Task<Void> {
+    class ANNTask extends Task<Double> {
 
-        private ANNModel annModel;
+        private ANNModel theModel;
         private LabeledInstances data;
 
         public ANNTask(ANNModel theModel, LabeledInstances data) {
-            this.annModel = theModel;
+            this.theModel = theModel;
             this.data = data;
         }
 
         @Override
-        protected Void call() throws Exception {
-            // training show be running here
-            if (isCancelled()) {
-                updateMessage("Cancelled");
-            }
+        protected Double call() throws Exception {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public double learn(LabeledInstances trainData,
-                            boolean doStochasticLearning,
-                            int batchSize) {
-
-            double totalError = 0.0;
-            int numInBatch = 0;
-
-            for (int i = 0; i < trainData.size(); i++) {
-                LabeledInstance inst;
-                if (doStochasticLearning) {
-                    inst = trainData.get(
-                            (int) (Math.random() * trainData.size()));
+            double totalError = Double.NaN;
+            ArrayList<ArrayList<Double>> output = theModel.getANN().classifyInstances(
+                    data);
+            int epoch;
+            for (epoch = 0; epoch < this.theModel.getANN().maxEpochs; epoch++) {
+                if (isCancelled()) {
+                    // change button
+                    break;
                 }
-                else {
-                    inst = trainData.get(i);
-                }
-                totalError += backpropagateError(inst);
-                numInBatch++;
+                totalError = theModel.getANN().learn(data, true, 1);
+                if (epoch % 1000 == 0) {
+                    output = theModel.getANN().classifyInstances(data);
+                    double error = theModel.getANN().computeOutputError(data,
+                                                                        output);
 
-                if (numInBatch == batchSize || i == trainData.size() - 1) {
-                    // Great! All of the delta weights have been computed and are stored inside
-                    // each edge. Now, update the weights and clear delta out for next time
-                    for (int j = 0; j < this.edgeConnections.length; j++) {
-                        this.edgeConnections[j].updateWeightsAndClearDelta();
+                    if (error <= theModel.getANN().errStopThresh) {
+                        System.out.println("SUCCESS!");
+                        break;
                     }
 
-                    numInBatch = 0;
                 }
-            }
-            currentSSE.setText(String.format("%.3f",
-                                             theModel.getANN().currSSE));
-            //need to update current epoch, don't know how
-            //currentEpoch.setText(String.format("%d",
-            //                                   theModel.getANN().getSubANNList().get(
-            //                                           0).getEpoch()));
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    DesignController.this.updateData();
-                }
-            });
-            Thread.sleep(1);
 
-            return null;
+                updateValue(totalError);
+                updateMessage(String.format("%d", epoch));
+                updateProgress(epoch, this.theModel.getANN().maxEpochs);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        DesignController.this.updateData();
+                    }
+                });
+                Thread.sleep(1);
+
+            }
+
+            return totalError;
         }
     }
 }
-
