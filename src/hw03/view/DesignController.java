@@ -16,7 +16,9 @@ package hw03.view;
 import hw03.model.ANNModel;
 import hw03.model.data.LabeledInstances;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -180,7 +182,10 @@ public class DesignController {
             alert.show();
         }
         else {
-
+            theModel.getANN().momentum = Double.parseDouble(
+                    this.momentum.getText());
+            theModel.getANN().learningRate = Double.parseDouble(
+                    this.alpha.getText());
         }
     }
 
@@ -242,6 +247,40 @@ public class DesignController {
 
         }
 
+    }
+
+    @FXML
+    void pauseBtn(ActionEvent event) {
+        try {
+            theTask.cancel(false);
+        } catch (NullPointerException e) {
+        }
+    }
+
+    @FXML
+    void saveBtn(ActionEvent event) throws FileNotFoundException, IOException {
+        if (theModel.getANN() != null) {
+            dialog = new TextInputDialog("Please input the config file path");
+            dialog.setTitle("Save Configuration");
+            dialog.setHeaderText("Enter the file path");
+            Optional<String> result = dialog.showAndWait();
+
+            String entered = "None yet";
+            if (result.isPresent()) {
+
+                entered = result.get();
+
+                FileOutputStream f = new FileOutputStream(entered);
+                ObjectOutputStream configOut = new ObjectOutputStream(f);
+                configOut.writeObject(theModel.getANN());
+            }
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Model not available yet");
+            alert.setHeaderText("Construct an ANN model first!");
+            alert.show();
+        }
     }
 
     //@FXML
