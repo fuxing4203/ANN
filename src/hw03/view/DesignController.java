@@ -122,7 +122,7 @@ public class DesignController {
     }
 
     @FXML
-    void applyConfigBtn(ActionEvent event) throws FileNotFoundException {
+    void applyConfigBtn(ActionEvent event) {
 
         try {
             this.theModel.takeInAttributeCreate(Integer.parseInt(
@@ -185,7 +185,7 @@ public class DesignController {
     }
 
     @FXML
-    void learnBtn(ActionEvent event) throws FileNotFoundException {
+    void learnBtn(ActionEvent event) {
 
         dialog = new TextInputDialog("Please input the file directory");
         dialog.setTitle("Learn");
@@ -325,9 +325,6 @@ public class DesignController {
             }
             outputWeights.add(labelOfWeights);
         }
-
-        //currentEpoch.textProperty().bind(theTask.messageProperty());
-        //currentSSE.textProperty().bind(theTask.valueProperty().asString("%.5f"));
     }
 
     public double calcDegree(Line line) {
@@ -344,19 +341,21 @@ public class DesignController {
     }
 
     public void updateData() {
-        currentEpoch.setText(theTask.messageProperty().get());
-        currentSSE.setText(String.format("%.5f", theTask.valueProperty().get()));
+        currentEpoch.textProperty().bind(theTask.messageProperty());
+        currentSSE.textProperty().bind(theTask.valueProperty().asString("%.5f"));
+        //currentEpoch.setText(theTask.messageProperty().get());
+        //currentSSE.setText(String.format("%.5f", theTask.valueProperty().get()));
 
         for (int i = 0; i < inputLayerNodes.size(); i++) {
             for (int j = 0; j < hiddenLayerNodes.size(); j++) {
                 inputWeights.get(i).get(j).setText(String.format(".4f",
-                                                                 theModel.getANN().getEdgeConnections()[0].getEdges()[i][j]));
+                                                                 theModel.getANN().getEdgeConnections()[0].getEdges()[j][i]));
             }
         }
         for (int i = 0; i < hiddenLayerNodes.size(); i++) {
             for (int j = 0; j < outputLayerNodes.size(); j++) {
                 outputWeights.get(i).get(j).setText(String.format(".4f",
-                                                                  theModel.getANN().getEdgeConnections()[1].getEdges()[i][j]));
+                                                                  theModel.getANN().getEdgeConnections()[1].getEdges()[j][i]));
             }
         }
     }
