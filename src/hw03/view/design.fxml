@@ -162,7 +162,7 @@
                   <TextField fx:id="alpha" prefHeight="27.0" prefWidth="130.0" text="0.2" />
                   <Label prefHeight="27.0" prefWidth="88.0" text="Momentum:" />
                   <TextField fx:id="momentum" prefHeight="27.0" prefWidth="70.0" text="0.5" />
-                  <Button fx:id="applyMomentumBtn" mnemonicParsing="false" opacity="0.85" text="APPLY">
+                  <Button fx:id="applyMomentumBtn" mnemonicParsing="false" onAction="#applyMomentumBtn" opacity="0.85" text="APPLY">
                      <VBox.margin>
                         <Insets top="20.0" />
                      </VBox.margin>
@@ -220,12 +220,12 @@
                   <Insets left="10.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <Button fx:id="pauseBtn" mnemonicParsing="false" text="Pause / Resume">
+            <Button fx:id="pauseBtn" mnemonicParsing="false" onAction="#pauseBtn" text="Pause / Resume">
                <VBox.margin>
                   <Insets left="10.0" top="140.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="saveBtn" mnemonicParsing="false" text="Finish / Save">
+            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#saveBtn" text="Finish / Save">
                <VBox.margin>
                   <Insets left="10.0" top="10.0" />
                </VBox.margin>
