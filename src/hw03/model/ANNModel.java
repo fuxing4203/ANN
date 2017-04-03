@@ -29,6 +29,18 @@ public class ANNModel {
     private SimpleBooleanProperty softSignChosen;
     private ANN ann;
 
+    public SimpleBooleanProperty getSigmoidalChosen() {
+        return sigmoidalChosen;
+    }
+
+    public SimpleBooleanProperty getSoftSignChosen() {
+        return softSignChosen;
+    }
+
+    public ANN getAnn() {
+        return ann;
+    }
+
     public void takeInFileCreate(String filename) throws FileNotFoundException, IOException, ClassNotFoundException {
 
         FileInputStream f = new FileInputStream(filename);

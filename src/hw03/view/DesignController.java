@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.binding.NumberBinding;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -111,10 +112,13 @@ public class DesignController {
     private Dialog dialog;
     private LabeledInstances data;
     private ArrayList<ArrayList<Double>> resultList;
+    private SimpleBooleanProperty ifPause;
 
     @FXML
     void initialize() {
         theTask = null;
+        theModel.getSigmoidalChosen().bind(actFuncRadio1.selectedProperty());
+
     }
 
     @FXML
