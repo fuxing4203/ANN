@@ -19,7 +19,6 @@ import hw03.model.data.UnlabeledInstances;
 import hw03.model.strategy.ActivationStrategy;
 import hw03.model.strategy.LogisticActivationStrategy;
 import hw03.model.strategy.SoftplusActivationStrategy;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -355,14 +354,14 @@ public class ANN {
         return result;
     }
 
-    /**
+    /*
      * Main method -- this is merely a test method to test out an ANN on a
      * specified dataset.
      *
      * @param args
      * @throws FileNotFoundException
      * @throws NeuronException
-     */
+
     public static void main(String[] args) throws FileNotFoundException {
         // Read in a dataset
         LabeledInstances trainData = new LabeledInstances("./src/circTrain.csv",
@@ -399,5 +398,5 @@ public class ANN {
         System.out.println("Epochs: " + epoch);
 
     }
-
+     */
 }
