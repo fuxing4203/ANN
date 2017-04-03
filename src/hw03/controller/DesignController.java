@@ -13,12 +13,14 @@
  */
 package hw03.controller;
 
-import hw03.model.*;
+import hw03.model.ANNModel;
+import hw03.model.data.LabeledInstance;
+import hw03.model.data.LabeledInstances;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.binding.NumberBinding;
 import javafx.concurrent.Task;
@@ -26,12 +28,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
@@ -94,6 +99,8 @@ public class DesignController implements Initializable {
     private Button applyConfigBtn;
     @FXML
     private Button applyMomentumBtn;
+    @FXML
+    private TextField fileNameBox;
 
     private ArrayList<Circle> inputLayerNodes;
     private ArrayList<Circle> hiddenLayerNodes;
@@ -103,19 +110,127 @@ public class DesignController implements Initializable {
     private VBox outputLayer;
     private ArrayList<ArrayList<Label>> inputWeights;
     private ArrayList<ArrayList<Label>> outputWeights;
+    private Dialog dialog;
+    private LabeledInstances data;
+    private ArrayList<ArrayList<Double>> resultList;
 
-    /**
-     * Initializes the controller class.
-     */
-    @Override
+    @FXML
+    public void initialize(/*URL url, ResourceBundle rb*/) {
+        this.theModel = null;
 
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+    }
+
+    @FXML
+    void applyConfigBtn(ActionEvent event) throws FileNotFoundException {
+
+        try {
+            this.theModel.takeInAttributeCreate(Integer.parseInt(
+                    this.numIN.getText()), Integer.parseInt(
+                                                this.numOUT.getText()),
+                                                Integer.parseInt(
+                                                        this.numNeurons.getText()),
+                                                Double.parseDouble(
+                                                        this.maxSSE.getText()),
+                                                Integer.parseInt(
+                                                        this.maxEpoch.getText()),
+
+                                                Integer.parseInt(
+                                                        this.alpha.getText()),
+                                                Integer.parseInt(
+                                                        this.momentum.getText()));
+        } catch (NumberFormatException numberFormatException) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Incorrect input!");
+            alert.setHeaderText("Incorrect input specified!");
+            alert.show();
+        }
+
+    }
+
+    @FXML
+    void fileUploadBtn(ActionEvent event) throws FileNotFoundException, IOException, ClassNotFoundException {
+
+        try {
+            this.theModel.takeInFileCreate(this.fileNameBox.getText());
+
+        } catch (FileNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Input file not found!");
+            alert.setHeaderText("Incorrect input specified!");
+            alert.show();
+        } catch (IOException e1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Incorrect input filename");
+            alert.setHeaderText("Incorrect input specified!");
+            alert.show();
+
+        }
+
+    }
+
+    @FXML
+    void learnBtn(ActionEvent event) throws FileNotFoundException {
+
+        dialog = new TextInputDialog("Please input the file directory");
+        dialog.setTitle("Learn");
+        dialog.setHeaderText("Enter the directory");
+        Optional<String> result = dialog.showAndWait();
+
+        String entered = "None yet";
+        if (result.isPresent()) {
+
+            entered = result.get();
+        }
+
+        try {
+            data = new LabeledInstances(entered, true, 2);
+            theTask = new ANNTask(theModel, data);
+
+            Thread th = new Thread(theTask);
+            th.setDaemon(true);
+            th.start();
+        } catch (FileNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Incorrect input filename");
+            alert.setHeaderText("Incorrect input specified!");
+            alert.show();
+
+        }
+
+    }
+
+    @FXML
+    void classifyBtn(ActionEvent event) throws FileNotFoundException {
+
+        dialog = new TextInputDialog("Please input the file directory");
+        dialog.setTitle("Classify");
+        dialog.setHeaderText("Enter the directory");
+        Optional<String> result = dialog.showAndWait();
+
+        String entered = "None yet";
+        if (result.isPresent()) {
+
+            entered = result.get();
+        }
+
+        try {
+            data = new LabeledInstances(entered, true, 2);
+            resultList = theModel.getANN().classifyInstances(data);
+            writeOutputs(resultList);
+
+        } catch (FileNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Incorrect input filename");
+            alert.setHeaderText("Incorrect input specified!");
+            alert.show();
+
+        }
+
     }
 
     @FXML
     void generateGraph(ActionEvent event) {
-        theTask = new ANNTask(theModel);
+
         NumberBinding radBinding = canvasPane.heightProperty().divide(
                 Math.max(
                         this.theModel.getANN().getNumInputs(),
@@ -195,9 +310,6 @@ public class DesignController implements Initializable {
             outputWeights.add(labelOfWeights);
         }
 
-        Thread th = new Thread(theTask);
-        th.setDaemon(true);
-        th.start();
     }
 
     public double calcDegree(Line line) {
@@ -228,10 +340,6 @@ public class DesignController implements Initializable {
         }
     }
 
-    public void setModel(ANNModel theModel) {
-        this.theModel = theModel;
-    }
-
     public void writeOutputs(ArrayList<ArrayList<Double>> resultList) {
         PrintWriter out;
         try {
@@ -251,9 +359,18 @@ public class DesignController implements Initializable {
         }
     }
 
+    public void setModel(ANNModel theModel) {
+        this.theModel = theModel;
+    }
+
     class ANNTask extends Task<Void> {
 
-        public ANNTask(ANNModel theModel) {
+        private ANNModel annModel;
+        private LabeledInstances data;
+
+        public ANNTask(ANNModel theModel, LabeledInstances data) {
+            this.annModel = theModel;
+            this.data = data;
         }
 
         @Override
@@ -261,6 +378,59 @@ public class DesignController implements Initializable {
             // training show be running here
             if (isCancelled()) {
                 updateMessage("Cancelled");
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public double learn(LabeledInstances trainData,
+                            boolean doStochasticLearning,
+                            int batchSize) {
+
+            double totalError = 0.0;
+            int numInBatch = 0;
+
+            for (int i = 0; i < trainData.size(); i++) {
+                LabeledInstance inst;
+                if (doStochasticLearning) {
+                    inst = trainData.get(
+                            (int) (Math.random() * trainData.size()));
+                }
+                else {
+                    inst = trainData.get(i);
+                }
+                totalError += backpropagateError(inst);
+                numInBatch++;
+
+                if (numInBatch == batchSize || i == trainData.size() - 1) {
+                    // Great! All of the delta weights have been computed and are stored inside
+                    // each edge. Now, update the weights and clear delta out for next time
+                    for (int j = 0; j < this.edgeConnections.length; j++) {
+                        this.edgeConnections[j].updateWeightsAndClearDelta();
+                    }
+
+                    numInBatch = 0;
+                }
             }
             currentSSE.setText(String.format("%.3f",
                                              theModel.getANN().currSSE));
@@ -280,3 +450,4 @@ public class DesignController implements Initializable {
         }
     }
 }
+

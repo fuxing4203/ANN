@@ -29,7 +29,7 @@ public class ANNModel {
     private SimpleBooleanProperty softSignChosen;
     private ANN ann;
 
-    public ANN takeInFileCreate(String filename) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public void takeInFileCreate(String filename) throws FileNotFoundException, IOException, ClassNotFoundException {
 
         FileInputStream f = new FileInputStream(filename);
         ObjectInputStream configIn = new ObjectInputStream(f);
@@ -37,11 +37,12 @@ public class ANNModel {
 
     }
 
-    public ANN takeInAttributeCreate(int numInp, int numOut,
-                                     int numNodesInHiddenLayers, double minSSE,
-                                     int maxEpoch,
-                                     int actFuncNum, int alpha, int mu) {
-
+    public void takeInAttributeCreate(int numInp, int numOut,
+                                      int numNodesInHiddenLayers, double minSSE,
+                                      int maxEpoch,
+                                      int alpha, int mu) {
+        this.ann = new ANN(numInp, numOut, numNodesInHiddenLayers, minSSE,
+                           maxEpoch, sigmoidalChosen.get(), alpha, mu);
     }
 
     public ANN getANN() {
