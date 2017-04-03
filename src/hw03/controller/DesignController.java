@@ -14,6 +14,8 @@
 package hw03.controller;
 
 import hw03.model.*;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -228,6 +230,25 @@ public class DesignController implements Initializable {
 
     public void setModel(ANNModel theModel) {
         this.theModel = theModel;
+    }
+
+    public void writeOutputs(ArrayList<ArrayList<Double>> resultList) {
+        PrintWriter out;
+        try {
+            out = new PrintWriter("output.csv");
+            for (int i = 0; i < resultList.size(); i++) {
+                for (int j = 0; j < resultList.get(i).size(); j++) {
+                    if (j != 0) {
+                        out.print(", ");
+                    }
+                    out.printf("%d", Math.round(resultList.get(i).get(j)));
+                }
+                out.println();
+            }
+            out.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("FileNotFoundException");
+        }
     }
 
     class ANNTask extends Task<Void> {
