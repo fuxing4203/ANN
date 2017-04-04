@@ -234,7 +234,7 @@
                   <Insets left="10.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <Button fx:id="stepBtn" mnemonicParsing="false" prefWidth="62.0" text="Step">
+            <Button fx:id="stepBtn" mnemonicParsing="false" onAction="#stepBtn" prefWidth="62.0" text="Step">
                <VBox.margin>
                   <Insets left="10.0" top="100.0" />
                </VBox.margin>

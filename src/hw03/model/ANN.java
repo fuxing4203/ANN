@@ -39,10 +39,11 @@ public class ANN implements Serializable {
 
     public static double learningRate;
     public static double momentum;
-    public static int maxEpochs;
-    public static double errStopThresh;
+    public int maxEpochs;
+    public double errStopThresh;
     public double currSSE;
     public boolean actFunc;
+    public int currEpoch;
 
     public int getNumInputs() {
         return numInputs;
@@ -90,7 +91,7 @@ public class ANN implements Serializable {
         this.momentum = momentum;
         this.actFunc = actFunc;
 
-        if (actFunc) {
+        if (this.actFunc) {
             this.activation = new LogisticActivationStrategy();
         }
         else {
@@ -133,6 +134,7 @@ public class ANN implements Serializable {
     public ArrayList<ArrayList<Double>> classifyInstances(LabeledInstances data) {
         ArrayList<ArrayList<Double>> resultList = new ArrayList<>();
         for (UnlabeledInstance inst : data) {
+            System.out.println("!");
             resultList.add(classifyInstance(inst));
         }
         return resultList;
