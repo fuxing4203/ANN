@@ -28,7 +28,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -39,7 +39,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
@@ -106,15 +106,13 @@ public class DesignController {
     private ArrayList<Circle> inputLayerNodes = new ArrayList<Circle>();
     private ArrayList<Circle> hiddenLayerNodes = new ArrayList<Circle>();
     private ArrayList<Circle> outputLayerNodes = new ArrayList<Circle>();
-    private VBox inputLayer;
-    private VBox hiddenLayer;
-    private VBox outputLayer;
     private ArrayList<ArrayList<Label>> inputWeights = new ArrayList<ArrayList<Label>>();
     private ArrayList<ArrayList<Label>> outputWeights = new ArrayList<ArrayList<Label>>();
     private Dialog dialog;
     private LabeledInstances data;
     private ArrayList<ArrayList<Double>> resultList = new ArrayList<ArrayList<Double>>();
     private SimpleBooleanProperty ifPause;
+    private Bounds posCanvas = canvasPane.getBoundsInParent();
 
     @FXML
     void initialize() {
@@ -285,7 +283,8 @@ public class DesignController {
 
     //@FXML
     void generateGraph() {
-
+        double width = canvasPane.getWidth();
+        double height = canvasPane.getWidth();
         NumberBinding radBinding = canvasPane.heightProperty().divide(
                 Math.max(
                         this.theModel.getANN().getNumInputs(),
@@ -293,33 +292,37 @@ public class DesignController {
                 -15);
         for (int i = 0; i < this.theModel.getANN().getNumInputs(); i++) {
             Circle c = new Circle(50);
+            c.setCenterX(width / 6);
+            c.setCenterY(
+                    height * (i + 1 + this.theModel.getANN().getNumInputs()) / this.theModel.getANN().getNumInputs() / 2);
+            c.setFill(Color.ORANGE);
             c.radiusProperty().bind(radBinding);
             inputLayerNodes.add(c);
         }
-        inputLayer = new VBox(10);
-        inputLayer.setAlignment(Pos.CENTER);
-        inputLayer.setMinHeight(300);
-        inputLayer.getChildren().addAll(inputLayerNodes);
 
         for (int i = 0; i < this.theModel.getANN().getNumHidden(); i++) {
             Circle c = new Circle(50);
+            c.setCenterX(width / 2);
+            c.setCenterY(
+                    height * (i + 1 + this.theModel.getANN().getNumHidden()) / this.theModel.getANN().getNumHidden() / 2);
+            c.setFill(Color.LIGHTCORAL);
             c.radiusProperty().bind(radBinding);
             hiddenLayerNodes.add(c);
         }
-        hiddenLayer = new VBox(10);
-        hiddenLayer.setAlignment(Pos.CENTER);
-        hiddenLayer.setMinHeight(300);
-        hiddenLayer.getChildren().addAll(inputLayerNodes);
 
-        outputLayer = new VBox(10);
-        outputLayer.setAlignment(Pos.CENTER);
-        outputLayer.setMinHeight(300);
         for (int i = 0; i < this.theModel.getANN().getNumOutputs(); i++) {
             Circle c = new Circle(50);
+            c.setCenterX(5 * width / 6);
+            c.setCenterY(
+                    height * (i + 1 + this.theModel.getANN().getNumOutputs()) / this.theModel.getANN().getNumOutputs() / 2);
+            c.setFill(Color.PINK);
             c.radiusProperty().bind(radBinding);
             outputLayerNodes.add(c);
         }
-        outputLayer.getChildren().addAll(outputLayerNodes);
+
+        canvasPane.getChildren().addAll(inputLayerNodes);
+        canvasPane.getChildren().addAll(hiddenLayerNodes);
+        canvasPane.getChildren().addAll(outputLayerNodes);
 
         inputWeights = new ArrayList();
         for (int i = 0; i < inputLayerNodes.size(); i++) {
@@ -335,7 +338,7 @@ public class DesignController {
                 weight.getTransforms().add(new Rotate(calcDegree(line)));
                 weight.getTransforms().add(new Translate(line.getStartX(),
                                                          line.getStartY()));
-                weight.setText(String.format(".4f",
+                weight.setText(String.format("%.4f",
                                              theModel.getANN().getEdgeConnections()[0].getEdges()[j][i]));
                 labelOfWeights.add(weight);
                 canvasPane.getChildren().add(weight);
@@ -357,7 +360,7 @@ public class DesignController {
                 weight.getTransforms().add(new Rotate(calcDegree(line)));
                 weight.getTransforms().add(new Translate(line.getStartX(),
                                                          line.getStartY()));
-                weight.setText(String.format(".4f",
+                weight.setText(String.format("%.4f",
                                              theModel.getANN().getEdgeConnections()[1].getEdges()[j][i]));
                 labelOfWeights.add(weight);
                 canvasPane.getChildren().add(weight);
@@ -382,8 +385,6 @@ public class DesignController {
     public void updateData() {
         currentEpoch.textProperty().bind(theTask.messageProperty());
         currentSSE.textProperty().bind(theTask.valueProperty().asString("%.5f"));
-        //currentEpoch.setText(theTask.messageProperty().get());
-        //currentSSE.setText(String.format("%.5f", theTask.valueProperty().get()));
 
         for (int i = 0; i < inputLayerNodes.size(); i++) {
             for (int j = 0; j < hiddenLayerNodes.size(); j++) {
@@ -444,7 +445,7 @@ public class DesignController {
                     // change button
                     break;
                 }
-                //totalError = theModel.getANN().learn(data, true, 1);
+                totalError = theModel.getANN().learn(data, true, 1);
                 if (epoch % 1000 == 0) {
                     output = theModel.getANN().classifyInstances(data);
                     totalError = theModel.getANN().computeOutputError(data,
