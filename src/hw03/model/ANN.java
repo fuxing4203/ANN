@@ -134,7 +134,6 @@ public class ANN implements Serializable {
     public ArrayList<ArrayList<Double>> classifyInstances(LabeledInstances data) {
         ArrayList<ArrayList<Double>> resultList = new ArrayList<>();
         for (UnlabeledInstance inst : data) {
-            System.out.println("!");
             resultList.add(classifyInstance(inst));
         }
         return resultList;

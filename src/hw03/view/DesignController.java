@@ -45,6 +45,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
@@ -118,6 +119,7 @@ public class DesignController {
     private ArrayList<ArrayList<Double>> resultList = new ArrayList<ArrayList<Double>>();
     private SimpleBooleanProperty ifPause = new SimpleBooleanProperty(true);
     private SimpleBooleanProperty ifStep = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty ifComplete;
 
     @FXML
     void initialize() {
@@ -146,7 +148,8 @@ public class DesignController {
                                                         this.momentum.getText()),
                                                 new SimpleBooleanProperty(
                                                         this.actFuncRadio1.selectedProperty().getValue()));
-            //generateGraph();
+            clearGraph();
+            generateGraph();
 
         } catch (NumberFormatException numberFormatException) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -161,6 +164,7 @@ public class DesignController {
 
         try {
             this.theModel.takeInFileCreate(this.fileNameBox.getText());
+            clearGraph();
             generateGraph();
 
         } catch (FileNotFoundException e) {
@@ -274,6 +278,10 @@ public class DesignController {
             Thread th = new Thread(theTask);
             th.setDaemon(true);
             th.start();
+
+            currentEpoch.textProperty().bind(theTask.messageProperty());
+            currentSSE.textProperty().bind(theTask.valueProperty().asString(
+                    "%.5f"));
         }
     }
 
@@ -290,6 +298,10 @@ public class DesignController {
                 Thread th = new Thread(theTask);
                 th.setDaemon(true);
                 th.start();
+
+                currentEpoch.textProperty().bind(theTask.messageProperty());
+                currentSSE.textProperty().bind(theTask.valueProperty().asString(
+                        "%.5f"));
             }
             ifPause.set(!ifPause.get());
 
@@ -323,6 +335,10 @@ public class DesignController {
         }
     }
 
+    void clearGraph() {
+        canvasPane.getChildren().clear();
+    }
+
     //@FXML
     void generateGraph() {
         double width = canvasPane.getWidth();
@@ -331,7 +347,7 @@ public class DesignController {
                 Math.max(
                         this.theModel.getANN().getNumInputs(),
                         this.theModel.getANN().getNumHidden()) * 2).add(
-                -15);
+                -30);
         NumberBinding centerXInputsBinding = canvasPane.widthProperty().divide(4);
         NumberBinding centerXHiddenBinding = canvasPane.widthProperty().divide(2);
         NumberBinding centerXOutputsBinding = canvasPane.widthProperty().divide(
@@ -389,15 +405,17 @@ public class DesignController {
                 canvasPane.getChildren().add(line);
 
                 Label weight = new Label();
-//                weight.rotateProperty().bind(calcDegree(line));
+                weight.rotateProperty().bind(calcDegree(line));
+                Paint c = Color.rgb(255, 255, 255, 0.7);
                 weight.setBackground(new Background(new BackgroundFill(
-                        Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+                        c, new CornerRadii(5), new Insets(2))));
                 weight.translateXProperty().bind(line.startXProperty().add(
                         line.endXProperty()).divide(2));
                 weight.translateYProperty().bind(line.startYProperty().add(
                         line.endYProperty()).divide(2));
-                weight.setText(String.format("%.4f",
+                weight.setText(String.format("%.2f",
                                              theModel.getANN().getEdgeConnections()[0].getEdges()[j][i].getWeight()));
+                weight.setPadding(new Insets(3));
                 labelOfWeights.add(weight);
             }
             inputWeights.add(labelOfWeights);
@@ -423,14 +441,15 @@ public class DesignController {
 
                 Label weight = new Label();
 
-//                weight.rotateProperty().bind();
+                weight.rotateProperty().bind(calcDegree(line));
+                Paint c = Color.rgb(255, 255, 255, 0.7);
                 weight.setBackground(new Background(new BackgroundFill(
-                        Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+                        c, new CornerRadii(5), new Insets(2))));
                 weight.translateXProperty().bind(line.startXProperty().add(
                         line.endXProperty()).divide(2));
                 weight.translateYProperty().bind(line.startYProperty().add(
                         line.endYProperty()).divide(2));
-                weight.setText(String.format("%.4f",
+                weight.setText(String.format("%.2f",
                                              theModel.getANN().getEdgeConnections()[1].getEdges()[j][i].getWeight()));
                 labelOfWeights.add(weight);
 
@@ -461,13 +480,13 @@ public class DesignController {
     public void updateData() {
         for (int i = 0; i < inputLayerNodes.size(); i++) {
             for (int j = 0; j < hiddenLayerNodes.size(); j++) {
-                inputWeights.get(i).get(j).setText(String.format("%.4f",
+                inputWeights.get(i).get(j).setText(String.format("%.2f",
                                                                  theModel.getANN().getEdgeConnections()[0].getEdges()[j][i].getWeight()));
             }
         }
         for (int i = 0; i < hiddenLayerNodes.size(); i++) {
             for (int j = 0; j < outputLayerNodes.size(); j++) {
-                outputWeights.get(i).get(j).setText(String.format("%.4f",
+                outputWeights.get(i).get(j).setText(String.format("%.2f",
                                                                   theModel.getANN().getEdgeConnections()[1].getEdges()[j][i].getWeight()));
             }
         }
@@ -503,27 +522,21 @@ public class DesignController {
 
         public ANNTask(ANNModel theModel, LabeledInstances data) {
             this.theModel = theModel;
-            System.out.println(this.theModel.getANN().maxEpochs);
             this.data = data;
-            System.out.println("check");
         }
 
         @Override
         protected Double call() throws Exception {
-            System.out.println("c");
             Double totalError = 0.0;
             ArrayList<ArrayList<Double>> output = theModel.getANN().classifyInstances(
                     data);
             int epoch;
-            System.out.println(this.theModel.getANN().maxEpochs);
             for (epoch = theModel.getANN().currEpoch; epoch < this.theModel.getANN().maxEpochs; epoch++) {
                 theModel.getANN().currEpoch = epoch;
                 if (isCancelled()) {
-                    System.out.println("cancel");
                     //change button
                     break;
                 }
-                System.out.println(epoch);
                 totalError = theModel.getANN().learn(data, true, 1);
                 if (epoch % 1000 == 0) {
                     output = theModel.getANN().classifyInstances(data);
