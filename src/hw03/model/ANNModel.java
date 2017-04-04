@@ -13,6 +13,8 @@
  */
 package hw03.model;
 
+import hw03.model.strategy.LogisticActivationStrategy;
+import hw03.model.strategy.SoftplusActivationStrategy;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,6 +41,15 @@ public class ANNModel {
         ObjectInputStream configIn = new ObjectInputStream(f);
         this.ann = (ANN) configIn.readObject();
         sigmoidalChosen = new SimpleBooleanProperty(this.ann.actFunc);
+
+        if (this.ann.actFunc) {
+            this.ann.activation = new LogisticActivationStrategy();
+        }
+        else {
+            this.ann.activation = new SoftplusActivationStrategy();
+        }
+
+        this.ann.currEpoch = 0;
     }
 
     public void takeInAttributeCreate(int numInp, int numOut,
