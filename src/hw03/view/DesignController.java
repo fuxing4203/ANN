@@ -24,11 +24,13 @@ import java.util.ArrayList;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.binding.NumberBinding;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -38,12 +40,13 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
 
 /**
  * FXML Controller class
@@ -112,7 +115,6 @@ public class DesignController {
     private LabeledInstances data;
     private ArrayList<ArrayList<Double>> resultList = new ArrayList<ArrayList<Double>>();
     private SimpleBooleanProperty ifPause;
-    private Bounds posCanvas = canvasPane.getBoundsInParent();
 
     @FXML
     void initialize() {
@@ -208,6 +210,10 @@ public class DesignController {
             Thread th = new Thread(theTask);
             th.setDaemon(true);
             th.start();
+
+            currentEpoch.textProperty().bind(theTask.messageProperty());
+            currentSSE.textProperty().bind(theTask.valueProperty().asString(
+                    "%.5f"));
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Incorrect input filename");
@@ -284,64 +290,79 @@ public class DesignController {
     //@FXML
     void generateGraph() {
         double width = canvasPane.getWidth();
-        double height = canvasPane.getWidth();
+        double height = canvasPane.getHeight();
         NumberBinding radBinding = canvasPane.heightProperty().divide(
                 Math.max(
                         this.theModel.getANN().getNumInputs(),
                         this.theModel.getANN().getNumHidden()) * 2).add(
                 -15);
+        NumberBinding centerXInputsBinding = canvasPane.widthProperty().divide(4);
+        NumberBinding centerXHiddenBinding = canvasPane.widthProperty().divide(2);
+        NumberBinding centerXOutputsBinding = canvasPane.widthProperty().divide(
+                4).multiply(3);
         for (int i = 0; i < this.theModel.getANN().getNumInputs(); i++) {
             Circle c = new Circle(50);
-            c.setCenterX(width / 6);
-            c.setCenterY(
-                    height * (i + 1 + this.theModel.getANN().getNumInputs()) / this.theModel.getANN().getNumInputs() / 2);
+            NumberBinding centerYBinding = canvasPane.heightProperty().divide(
+                    (this.theModel.getANN().getNumInputs() + 1)).multiply(i + 1);
+
             c.setFill(Color.ORANGE);
             c.radiusProperty().bind(radBinding);
+            c.centerXProperty().bind(centerXInputsBinding);
+            c.centerYProperty().bind(centerYBinding);
             inputLayerNodes.add(c);
         }
 
         for (int i = 0; i < this.theModel.getANN().getNumHidden(); i++) {
             Circle c = new Circle(50);
-            c.setCenterX(width / 2);
-            c.setCenterY(
-                    height * (i + 1 + this.theModel.getANN().getNumHidden()) / this.theModel.getANN().getNumHidden() / 2);
+            NumberBinding centerYBinding = canvasPane.heightProperty().divide(
+                    (this.theModel.getANN().getNumHidden() + 1)).multiply(i + 1);
             c.setFill(Color.LIGHTCORAL);
             c.radiusProperty().bind(radBinding);
+            c.centerXProperty().bind(centerXHiddenBinding);
+            c.centerYProperty().bind(centerYBinding);
             hiddenLayerNodes.add(c);
         }
 
         for (int i = 0; i < this.theModel.getANN().getNumOutputs(); i++) {
             Circle c = new Circle(50);
-            c.setCenterX(5 * width / 6);
-            c.setCenterY(
-                    height * (i + 1 + this.theModel.getANN().getNumOutputs()) / this.theModel.getANN().getNumOutputs() / 2);
+            NumberBinding centerYBinding = canvasPane.heightProperty().divide(
+                    (this.theModel.getANN().getNumOutputs() + 1)).multiply(i + 1);
             c.setFill(Color.PINK);
             c.radiusProperty().bind(radBinding);
+            c.centerXProperty().bind(centerXOutputsBinding);
+            c.centerYProperty().bind(centerYBinding);
             outputLayerNodes.add(c);
         }
-
-        canvasPane.getChildren().addAll(inputLayerNodes);
-        canvasPane.getChildren().addAll(hiddenLayerNodes);
-        canvasPane.getChildren().addAll(outputLayerNodes);
 
         inputWeights = new ArrayList();
         for (int i = 0; i < inputLayerNodes.size(); i++) {
             ArrayList<Label> labelOfWeights = new ArrayList();
             for (int j = 0; j < hiddenLayerNodes.size(); j++) {
                 Line line = new Line();
+                line.startXProperty().bind(
+                        inputLayerNodes.get(i).centerXProperty());
+                line.startYProperty().bind(
+                        inputLayerNodes.get(i).centerYProperty());
+                line.endXProperty().bind(
+                        hiddenLayerNodes.get(j).centerXProperty());
+                line.endYProperty().bind(
+                        hiddenLayerNodes.get(j).centerYProperty());
+
                 line.setStrokeWidth(3);
-                updateLinePosition(line, inputLayerNodes.get(i),
-                                   hiddenLayerNodes.get(j));
+                line.setStroke(Color.BLUE);
                 canvasPane.getChildren().add(line);
 
                 Label weight = new Label();
-                weight.getTransforms().add(new Rotate(calcDegree(line)));
-                weight.getTransforms().add(new Translate(line.getStartX(),
-                                                         line.getStartY()));
+//                weight.rotateProperty().bind(calcDegree(line));
+                weight.setBackground(new Background(new BackgroundFill(
+                        Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+                weight.translateXProperty().bind(line.startXProperty().add(
+                        line.endXProperty()).divide(2));
+                weight.translateYProperty().bind(line.startYProperty().add(
+                        line.endYProperty()).divide(2));
                 weight.setText(String.format("%.4f",
-                                             theModel.getANN().getEdgeConnections()[0].getEdges()[j][i]));
+                                             theModel.getANN().getEdgeConnections()[0].getEdges()[j][i].getWeight()));
                 labelOfWeights.add(weight);
-                canvasPane.getChildren().add(weight);
             }
             inputWeights.add(labelOfWeights);
         }
@@ -351,51 +372,67 @@ public class DesignController {
             ArrayList<Label> labelOfWeights = new ArrayList();
             for (int j = 0; j < outputLayerNodes.size(); j++) {
                 Line line = new Line();
+
+                line.startXProperty().bind(
+                        hiddenLayerNodes.get(i).centerXProperty());
+                line.startYProperty().bind(
+                        hiddenLayerNodes.get(i).centerYProperty());
+                line.endXProperty().bind(
+                        outputLayerNodes.get(j).centerXProperty());
+                line.endYProperty().bind(
+                        outputLayerNodes.get(j).centerYProperty());
                 line.setStrokeWidth(3);
-                updateLinePosition(line, hiddenLayerNodes.get(i),
-                                   outputLayerNodes.get(j));
+                line.setStroke(Color.GREEN);
                 canvasPane.getChildren().add(line);
 
                 Label weight = new Label();
-                weight.getTransforms().add(new Rotate(calcDegree(line)));
-                weight.getTransforms().add(new Translate(line.getStartX(),
-                                                         line.getStartY()));
+
+//                weight.rotateProperty().bind();
+                weight.setBackground(new Background(new BackgroundFill(
+                        Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+                weight.translateXProperty().bind(line.startXProperty().add(
+                        line.endXProperty()).divide(2));
+                weight.translateYProperty().bind(line.startYProperty().add(
+                        line.endYProperty()).divide(2));
                 weight.setText(String.format("%.4f",
-                                             theModel.getANN().getEdgeConnections()[1].getEdges()[j][i]));
+                                             theModel.getANN().getEdgeConnections()[1].getEdges()[j][i].getWeight()));
                 labelOfWeights.add(weight);
-                canvasPane.getChildren().add(weight);
+
             }
             outputWeights.add(labelOfWeights);
+
+        }
+
+        canvasPane.getChildren().addAll(inputLayerNodes);
+        canvasPane.getChildren().addAll(hiddenLayerNodes);
+        canvasPane.getChildren().addAll(outputLayerNodes);
+
+        for (int i = 0; i < outputWeights.size(); i++) {
+            canvasPane.getChildren().addAll(outputWeights.get(i));
+        }
+
+        for (int i = 0; i < inputWeights.size(); i++) {
+            canvasPane.getChildren().addAll(inputWeights.get(i));
         }
     }
 
-    public double calcDegree(Line line) {
+    public DoubleProperty calcDegree(Line line) {
         double x = line.getEndX() - line.getStartX();
         double y = line.getEndY() - line.getStartY();
-        return Math.tan(y / x);
-    }
-
-    private void updateLinePosition(Line line, Circle c1, Circle c2) {
-        line.setStartX(c1.getCenterX() + c1.getRadius());
-        line.setStartY(c1.getCenterY() + c1.getRadius());
-        line.setEndX(c2.getCenterX() + c2.getRadius());
-        line.setEndY(c2.getCenterY() + c2.getRadius());
+        return new SimpleDoubleProperty(Math.toDegrees(Math.atan(y / x)));
     }
 
     public void updateData() {
-        currentEpoch.textProperty().bind(theTask.messageProperty());
-        currentSSE.textProperty().bind(theTask.valueProperty().asString("%.5f"));
-
         for (int i = 0; i < inputLayerNodes.size(); i++) {
             for (int j = 0; j < hiddenLayerNodes.size(); j++) {
-                inputWeights.get(i).get(j).setText(String.format(".4f",
-                                                                 theModel.getANN().getEdgeConnections()[0].getEdges()[j][i]));
+                inputWeights.get(i).get(j).setText(String.format("%.4f",
+                                                                 theModel.getANN().getEdgeConnections()[0].getEdges()[j][i].getWeight()));
             }
         }
         for (int i = 0; i < hiddenLayerNodes.size(); i++) {
             for (int j = 0; j < outputLayerNodes.size(); j++) {
-                outputWeights.get(i).get(j).setText(String.format(".4f",
-                                                                  theModel.getANN().getEdgeConnections()[1].getEdges()[j][i]));
+                outputWeights.get(i).get(j).setText(String.format("%.4f",
+                                                                  theModel.getANN().getEdgeConnections()[1].getEdges()[j][i].getWeight()));
             }
         }
     }
@@ -450,7 +487,6 @@ public class DesignController {
                     output = theModel.getANN().classifyInstances(data);
                     totalError = theModel.getANN().computeOutputError(data,
                                                                       output);
-
                     if (totalError <= theModel.getANN().errStopThresh) {
                         System.out.println("SUCCESS!");
                         break;
