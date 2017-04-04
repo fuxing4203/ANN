@@ -12,6 +12,8 @@
  */
 package hw03.model;
 
+import java.io.Serializable;
+
 /**
  * Edge
  *
@@ -21,7 +23,7 @@ package hw03.model;
  *
  * @author brk009
  */
-public class Edge {
+public class Edge implements Serializable {
 
     private final Neuron inNeuron;
     private final Neuron outNeuron;

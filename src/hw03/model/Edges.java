@@ -12,6 +12,7 @@
  */
 package hw03.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -19,7 +20,7 @@ import java.util.Arrays;
  *
  * @author brk009
  */
-public class Edges {
+public class Edges implements Serializable {
 
     private Layer inLayer;
     private Layer outLayer;

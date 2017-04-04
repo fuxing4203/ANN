@@ -52,7 +52,7 @@ import javafx.scene.transform.Translate;
  */
 public class DesignController {
 
-    private ANNModel theModel;
+    private ANNModel theModel = new ANNModel();
     private ANNTask theTask;
     @FXML
     private Button learnBtn;
@@ -88,6 +88,8 @@ public class DesignController {
     private Label currentSSE;
     @FXML
     private Label currentEpoch;
+    @FXML
+    private Button stepBtn;
     @FXML
     private Button pauseBtn;
     @FXML
@@ -246,6 +248,11 @@ public class DesignController {
             alert.show();
 
         }
+
+    }
+
+    @FXML
+    void stepBtn(ActionEvent event) {
 
     }
 
@@ -444,7 +451,7 @@ public class DesignController {
                     // change button
                     break;
                 }
-                //totalError = theModel.getANN().learn(data, true, 1);
+                totalError = theModel.getANN().learn(data, true, 1);
                 if (epoch % 1000 == 0) {
                     output = theModel.getANN().classifyInstances(data);
                     totalError = theModel.getANN().computeOutputError(data,

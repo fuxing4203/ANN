@@ -37,7 +37,7 @@ public class ANNModel {
 
         FileInputStream f = new FileInputStream(filename);
         ObjectInputStream configIn = new ObjectInputStream(f);
-        this.ann = (hw03.model.ANN) configIn.readObject();
+        this.ann = (ANN) configIn.readObject();
 
     }
 
