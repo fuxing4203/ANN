@@ -55,7 +55,7 @@ import javafx.scene.shape.Line;
  */
 public class DesignController {
 
-    private ANNModel theModel;
+    private ANNModel theModel = new ANNModel();
     private ANNTask theTask;
     @FXML
     private Button learnBtn;
@@ -92,6 +92,8 @@ public class DesignController {
     @FXML
     private Label currentEpoch;
     @FXML
+    private Button stepBtn;
+    @FXML
     private Button pauseBtn;
     @FXML
     private Button saveBtn;
@@ -114,7 +116,8 @@ public class DesignController {
     private Dialog dialog;
     private LabeledInstances data;
     private ArrayList<ArrayList<Double>> resultList = new ArrayList<ArrayList<Double>>();
-    private SimpleBooleanProperty ifPause;
+    private SimpleBooleanProperty ifPause = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty ifStep = new SimpleBooleanProperty(false);
 
     @FXML
     void initialize() {
@@ -141,7 +144,9 @@ public class DesignController {
                                                         this.alpha.getText()),
                                                 Double.parseDouble(
                                                         this.momentum.getText()),
-                                                this.actFuncRadio1.selectedProperty());
+                                                new SimpleBooleanProperty(
+                                                        this.actFuncRadio1.selectedProperty().getValue()));
+            //generateGraph();
 
         } catch (NumberFormatException numberFormatException) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -149,7 +154,6 @@ public class DesignController {
             alert.setHeaderText("Incorrect input specified!");
             alert.show();
         }
-        generateGraph();
     }
 
     @FXML
@@ -157,6 +161,7 @@ public class DesignController {
 
         try {
             this.theModel.takeInFileCreate(this.fileNameBox.getText());
+            generateGraph();
 
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -175,6 +180,7 @@ public class DesignController {
 
     @FXML
     void applyMomentumBtn(ActionEvent event) {
+
         if (!ifPause.get()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Learning in progress!");
@@ -190,7 +196,7 @@ public class DesignController {
     }
 
     @FXML
-    void learnBtn(ActionEvent event) {
+    void learnBtn(ActionEvent event) throws Exception {
 
         dialog = new TextInputDialog("Please input the file directory");
         dialog.setTitle("Learn");
@@ -206,6 +212,7 @@ public class DesignController {
         try {
             data = new LabeledInstances(entered, true, 2);
             theTask = new ANNTask(theModel, data);
+            //theTask.call();
 
             Thread th = new Thread(theTask);
             th.setDaemon(true);
@@ -214,6 +221,8 @@ public class DesignController {
             currentEpoch.textProperty().bind(theTask.messageProperty());
             currentSSE.textProperty().bind(theTask.valueProperty().asString(
                     "%.5f"));
+            ifPause.set(false);
+
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Incorrect input filename");
@@ -254,9 +263,36 @@ public class DesignController {
     }
 
     @FXML
+    void stepBtn(ActionEvent event) {
+        if (!ifPause.get()) {
+            this.pauseBtn.fire();
+        }
+        else {
+            this.ifStep.set(true);
+            theTask = new ANNTask(theModel, data);
+
+            Thread th = new Thread(theTask);
+            th.setDaemon(true);
+            th.start();
+        }
+    }
+
+    @FXML
     void pauseBtn(ActionEvent event) {
         try {
-            theTask.cancel(false);
+            if (!ifPause.get()) {
+                theTask.cancel(false);
+            }
+            else {
+                ifStep.set(false);
+                theTask = new ANNTask(theModel, data);
+
+                Thread th = new Thread(theTask);
+                th.setDaemon(true);
+                th.start();
+            }
+            ifPause.set(!ifPause.get());
+
         } catch (NullPointerException e) {
         }
     }
@@ -467,21 +503,27 @@ public class DesignController {
 
         public ANNTask(ANNModel theModel, LabeledInstances data) {
             this.theModel = theModel;
+            System.out.println(this.theModel.getANN().maxEpochs);
             this.data = data;
+            System.out.println("check");
         }
 
         @Override
         protected Double call() throws Exception {
-
+            System.out.println("c");
             Double totalError = 0.0;
             ArrayList<ArrayList<Double>> output = theModel.getANN().classifyInstances(
                     data);
-            int epoch = 0;
-            for (epoch = 0; epoch < this.theModel.getANN().maxEpochs; epoch++) {
+            int epoch;
+            System.out.println(this.theModel.getANN().maxEpochs);
+            for (epoch = theModel.getANN().currEpoch; epoch < this.theModel.getANN().maxEpochs; epoch++) {
+                theModel.getANN().currEpoch = epoch;
                 if (isCancelled()) {
-                    // change button
+                    System.out.println("cancel");
+                    //change button
                     break;
                 }
+                System.out.println(epoch);
                 totalError = theModel.getANN().learn(data, true, 1);
                 if (epoch % 1000 == 0) {
                     output = theModel.getANN().classifyInstances(data);
@@ -505,6 +547,9 @@ public class DesignController {
                 });
                 Thread.sleep(1);
 
+                if (ifStep.get()) {
+                    this.cancel(false);
+                }
             }
 
             return totalError;

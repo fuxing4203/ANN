@@ -12,11 +12,13 @@
  */
 package hw03.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author brk009
  */
-public class Neuron {
+public class Neuron implements Serializable {
 
     private double netInput;
     private double output;

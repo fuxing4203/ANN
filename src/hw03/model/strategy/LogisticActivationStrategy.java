@@ -10,7 +10,10 @@
  * ****************************************
  */package hw03.model.strategy;
 
-public class LogisticActivationStrategy implements ActivationStrategy {
+import java.io.Serializable;
+
+public class LogisticActivationStrategy implements ActivationStrategy,
+                                                   Serializable {
 
     @Override
     public double f(double x) {

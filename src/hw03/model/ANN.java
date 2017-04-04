@@ -19,6 +19,7 @@ import hw03.model.data.UnlabeledInstances;
 import hw03.model.strategy.ActivationStrategy;
 import hw03.model.strategy.LogisticActivationStrategy;
 import hw03.model.strategy.SoftplusActivationStrategy;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -26,7 +27,7 @@ import java.util.ArrayList;
  *
  * @author brk009
  */
-public class ANN {
+public class ANN implements Serializable {
 
     private int numInputs;
     private int numHidden;
@@ -38,9 +39,11 @@ public class ANN {
 
     public static double learningRate;
     public static double momentum;
-    public static int maxEpochs;
-    public static double errStopThresh;
+    public int maxEpochs;
+    public double errStopThresh;
     public double currSSE;
+    public boolean actFunc;
+    public int currEpoch;
 
     public int getNumInputs() {
         return numInputs;
@@ -86,8 +89,9 @@ public class ANN {
         this.maxEpochs = maxEpochs;
         this.learningRate = learningRate;
         this.momentum = momentum;
+        this.actFunc = actFunc;
 
-        if (actFunc) {
+        if (this.actFunc) {
             this.activation = new LogisticActivationStrategy();
         }
         else {
@@ -130,6 +134,7 @@ public class ANN {
     public ArrayList<ArrayList<Double>> classifyInstances(LabeledInstances data) {
         ArrayList<ArrayList<Double>> resultList = new ArrayList<>();
         for (UnlabeledInstance inst : data) {
+            System.out.println("!");
             resultList.add(classifyInstance(inst));
         }
         return resultList;

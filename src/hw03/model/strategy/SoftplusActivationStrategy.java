@@ -15,7 +15,10 @@
  */
 package hw03.model.strategy;
 
-public class SoftplusActivationStrategy implements ActivationStrategy {
+import java.io.Serializable;
+
+public class SoftplusActivationStrategy implements ActivationStrategy,
+                                                   Serializable {
 
     @Override
     public double f(double x) {
