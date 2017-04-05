@@ -467,10 +467,10 @@ public class DesignController {
                 Paint c = Color.rgb(255, 255, 255, 0.7);
                 weight.setBackground(new Background(new BackgroundFill(
                         c, new CornerRadii(5), new Insets(2))));
-                weight.translateXProperty().bind(line.startXProperty().add(
-                        line.endXProperty()).divide(2));
+                weight.translateXProperty().bind(line.endXProperty().subtract(
+                        radBinding.multiply(2)));
                 weight.translateYProperty().bind(line.startYProperty().add(
-                        line.endYProperty()).divide(2));
+                        line.endYProperty()).divide(2).add(-15));
                 weight.setText(String.format("%.2f",
                                              theModel.getANN().getEdgeConnections()[0].getEdges()[j][i].getWeight()));
                 weight.setPadding(new Insets(3));
