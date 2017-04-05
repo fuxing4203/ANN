@@ -393,7 +393,6 @@ public class DesignController {
         canvasPane.getChildren().clear();
     }
 
-    //@FXML
     void generateGraph() {
 
         inputLayerNodes = new ArrayList<Circle>();
@@ -529,12 +528,21 @@ public class DesignController {
         }
     }
 
+    /**
+     * Calculate the degree of rotation for the weight label
+     *
+     * @param line - the line which label will be on
+     * @return DoubleProperty that can be bind with rotateProperty
+     */
     public DoubleProperty calcDegree(Line line) {
         double x = line.getEndX() - line.getStartX();
         double y = line.getEndY() - line.getStartY();
         return new SimpleDoubleProperty(Math.toDegrees(Math.atan(y / x)));
     }
 
+    /**
+     * Update the weight information on the graph
+     */
     public void updateData() {
         for (int i = 0; i < inputLayerNodes.size(); i++) {
             for (int j = 0; j < hiddenLayerNodes.size(); j++) {
@@ -550,6 +558,12 @@ public class DesignController {
         }
     }
 
+    /**
+     * Write the given resultList to the filePath provided
+     *
+     * @param resultList - a list of outputs classified
+     * @param filePath - path for the output file
+     */
     public void writeOutputs(ArrayList<ArrayList<Double>> resultList,
                              String filePath) {
         PrintWriter out;
@@ -570,6 +584,11 @@ public class DesignController {
         }
     }
 
+    /**
+     * Set ANN Model
+     *
+     * @param theModel
+     */
     public void setModel(ANNModel theModel) {
         this.theModel = theModel;
     }
