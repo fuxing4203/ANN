@@ -266,9 +266,9 @@ public class DesignController {
     @FXML
     void classifyBtn(ActionEvent event) throws FileNotFoundException {
 
-        dialog = new TextInputDialog("Please input the file directory");
+        dialog = new TextInputDialog("Please input the file path");
         dialog.setTitle("Classify");
-        dialog.setHeaderText("Enter the directory");
+        dialog.setHeaderText("Enter the path");
         Optional<String> result = dialog.showAndWait();
 
         String entered = "None yet";
@@ -297,9 +297,9 @@ public class DesignController {
             data = new LabeledInstances(entered, labeled, target);
             resultList = theModel.getANN().classifyInstances(data);
 
-            dialog = new TextInputDialog("Please input the file directory");
-            dialog.setTitle("Classify");
-            dialog.setHeaderText("Enter the directory");
+            dialog = new TextInputDialog("Please input the output file path");
+            dialog.setTitle("Output File");
+            dialog.setHeaderText("Enter the path");
             result = dialog.showAndWait();
 
             String outFilePath = "None yet";
