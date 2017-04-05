@@ -393,6 +393,11 @@ public class DesignController {
         canvasPane.getChildren().clear();
     }
 
+    /**
+     * Generate the corresponding visualization for the ANN
+     *
+     *
+     */
     void generateGraph() {
 
         inputLayerNodes = new ArrayList<Circle>();
