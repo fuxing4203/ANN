@@ -35,6 +35,14 @@ public class ANNModel {
         return ann;
     }
 
+    /**
+     * Create ann using input serialized file
+     *
+     * @param filename
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void takeInFileCreate(String filename) throws FileNotFoundException, IOException, ClassNotFoundException {
 
         FileInputStream f = new FileInputStream(filename);
@@ -52,6 +60,18 @@ public class ANNModel {
         this.ann.currEpoch = 0;
     }
 
+    /**
+     * Create ann using ann constructor
+     *
+     * @param numInp
+     * @param numOut
+     * @param numNodesInHiddenLayers
+     * @param minSSE
+     * @param maxEpoch
+     * @param alpha
+     * @param mu
+     * @param sigmoidal
+     */
     public void takeInAttributeCreate(int numInp, int numOut,
                                       int numNodesInHiddenLayers, double minSSE,
                                       int maxEpoch,

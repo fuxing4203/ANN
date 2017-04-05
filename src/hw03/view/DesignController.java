@@ -122,7 +122,6 @@ public class DesignController {
     private ArrayList<ArrayList<Double>> resultList = new ArrayList<ArrayList<Double>>();
     private SimpleBooleanProperty ifPause = new SimpleBooleanProperty(true);
     private SimpleBooleanProperty ifStep = new SimpleBooleanProperty(false);
-    private SimpleBooleanProperty ifComplete;
 
     @FXML
     void initialize() {
