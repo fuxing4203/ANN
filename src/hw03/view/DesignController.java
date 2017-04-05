@@ -296,7 +296,19 @@ public class DesignController {
             }
             data = new LabeledInstances(entered, labeled, target);
             resultList = theModel.getANN().classifyInstances(data);
-            writeOutputs(resultList);
+
+            dialog = new TextInputDialog("Please input the file directory");
+            dialog.setTitle("Classify");
+            dialog.setHeaderText("Enter the directory");
+            result = dialog.showAndWait();
+
+            String outFilePath = "None yet";
+            if (result.isPresent()) {
+
+                outFilePath = result.get();
+            }
+
+            writeOutputs(resultList, outFilePath);
 
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -534,10 +546,11 @@ public class DesignController {
         }
     }
 
-    public void writeOutputs(ArrayList<ArrayList<Double>> resultList) {
+    public void writeOutputs(ArrayList<ArrayList<Double>> resultList,
+                             String filePath) {
         PrintWriter out;
         try {
-            out = new PrintWriter("output.csv");
+            out = new PrintWriter(filePath);
             for (int i = 0; i < resultList.size(); i++) {
                 for (int j = 0; j < resultList.get(i).size(); j++) {
                     if (j != 0) {
