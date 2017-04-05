@@ -15,6 +15,7 @@ package hw03.view;
 
 import hw03.model.ANNModel;
 import hw03.model.data.LabeledInstances;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Scanner;
 import javafx.application.Platform;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
@@ -214,7 +216,23 @@ public class DesignController {
         }
 
         try {
-            data = new LabeledInstances(entered, true, 2);
+            Integer[] target = new Integer[theModel.getANN().getNumOutputs()];
+            int numIp = theModel.getANN().getNumInputs();
+            for (int i = 0; i < theModel.getANN().getNumOutputs(); i++) {
+                target[i] = numIp + i;
+            }
+            boolean labeled = false;
+            try {
+                File f = new File(entered);
+                Scanner fScanner = new Scanner(f);
+                String line = fScanner.nextLine();
+                String[] parts = line.split(",");
+                double a = Double.parseDouble(parts[0]);
+
+            } catch (NumberFormatException e) {
+                labeled = false;
+            }
+            data = new LabeledInstances(entered, labeled, target);
             theTask = new ANNTask(theModel, data);
             //theTask.call();
 
@@ -252,7 +270,23 @@ public class DesignController {
         }
 
         try {
-            data = new LabeledInstances(entered, true, 2);
+            Integer[] target = new Integer[theModel.getANN().getNumOutputs()];
+            int numIp = theModel.getANN().getNumInputs();
+            for (int i = 0; i < theModel.getANN().getNumOutputs(); i++) {
+                target[i] = numIp + i;
+            }
+            boolean labeled = false;
+            try {
+                File f = new File(entered);
+                Scanner fScanner = new Scanner(f);
+                String line = fScanner.nextLine();
+                String[] parts = line.split(",");
+                double a = Double.parseDouble(parts[0]);
+
+            } catch (NumberFormatException e) {
+                labeled = false;
+            }
+            data = new LabeledInstances(entered, labeled, target);
             resultList = theModel.getANN().classifyInstances(data);
             writeOutputs(resultList);
 
