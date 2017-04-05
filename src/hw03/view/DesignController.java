@@ -50,6 +50,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -127,6 +128,13 @@ public class DesignController {
     void initialize() {
         theTask = null;
         //theModel.getSigmoidalChosen().bind(actFuncRadio1.selectedProperty());
+
+    }
+
+    @FXML
+    void exitBtn(ActionEvent event) {
+
+        ((Stage) (((Button) event.getSource()).getScene().getWindow())).close();
 
     }
 
