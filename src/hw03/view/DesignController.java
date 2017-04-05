@@ -112,11 +112,11 @@ public class DesignController {
     @FXML
     private TextField fileNameBox;
 
-    private ArrayList<Circle> inputLayerNodes = new ArrayList<Circle>();
-    private ArrayList<Circle> hiddenLayerNodes = new ArrayList<Circle>();
-    private ArrayList<Circle> outputLayerNodes = new ArrayList<Circle>();
-    private ArrayList<ArrayList<Label>> inputWeights = new ArrayList<ArrayList<Label>>();
-    private ArrayList<ArrayList<Label>> outputWeights = new ArrayList<ArrayList<Label>>();
+    private ArrayList<Circle> inputLayerNodes;
+    private ArrayList<Circle> hiddenLayerNodes;
+    private ArrayList<Circle> outputLayerNodes;
+    private ArrayList<ArrayList<Label>> inputWeights;
+    private ArrayList<ArrayList<Label>> outputWeights;
     private Dialog dialog;
     private LabeledInstances data;
     private ArrayList<ArrayList<Double>> resultList = new ArrayList<ArrayList<Double>>();
@@ -383,8 +383,12 @@ public class DesignController {
 
     //@FXML
     void generateGraph() {
-        double width = canvasPane.getWidth();
-        double height = canvasPane.getHeight();
+
+        inputLayerNodes = new ArrayList<Circle>();
+        hiddenLayerNodes = new ArrayList<Circle>();
+        outputLayerNodes = new ArrayList<Circle>();
+        inputWeights = new ArrayList<ArrayList<Label>>();
+        outputWeights = new ArrayList<ArrayList<Label>>();
         NumberBinding radBinding = canvasPane.heightProperty().divide(
                 Math.max(
                         this.theModel.getANN().getNumInputs(),
